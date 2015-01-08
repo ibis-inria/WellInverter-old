@@ -1,0 +1,15 @@
+<div onmousedown="return false" id="YDR-Frame" class="frame">
+   <div id="selection" class="selection-div"></div>
+   <canvas width="550" height="400" id="well-set-microplate" onclick="wrc.wellSetController.microplateClickhandler(event)"></canvas>
+</div>
+
+<form>
+   <input type="button" value="Define set" id="define-button" onclick="wrc.wellSetController.defineSetClickHandler()">
+</form>
+
+<div class="easyui-info">
+   <div class="easyui-tip icon-tip"></div>
+   <div id="well-set-tip"></div>
+</div>
+
+

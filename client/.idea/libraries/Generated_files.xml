@@ -1,0 +1,55 @@
+<component name="libraryTable">
+  <library name="Generated files" type="javaScript">
+    <properties>
+      <sourceFilesUrls>
+        <item url="file://$PROJECT_DIR$/model/Well.js" />
+        <item url="file://$PROJECT_DIR$/controller/CsvTecanParser.js" />
+        <item url="file://$PROJECT_DIR$/controller/CsvParser.js" />
+        <item url="file://$PROJECT_DIR$/controller/WindowController.js" />
+        <item url="file://$PROJECT_DIR$/model/Measure.js" />
+        <item url="file://$PROJECT_DIR$/model/WellReader.js" />
+        <item url="file://$PROJECT_DIR$/controller/BackgroundDefinitionController.js" />
+        <item url="file://$PROJECT_DIR$/model/SmoothingCubicSpline.js" />
+        <item url="file://$PROJECT_DIR$/controller/AuthenticationController.js" />
+        <item url="file://$PROJECT_DIR$/model/Polynomial.js" />
+        <item url="file://$PROJECT_DIR$/controller/DialogController.js" />
+        <item url="file://$PROJECT_DIR$/controller/WellSelector.js" />
+        <item url="file://$PROJECT_DIR$/controller/ContextMenuController.js" />
+        <item url="file://$PROJECT_DIR$/controller/WellReaderController.js" />
+        <item url="file://$PROJECT_DIR$/controller/ExperimentInfoController.js" />
+        <item url="file://$PROJECT_DIR$/controller/UploadExperimentController.js" />
+        <item url="file://$PROJECT_DIR$/controller/ExperimentController.js" />
+        <item url="file://$PROJECT_DIR$/controller/GlobalParametersController.js" />
+        <item url="file://$PROJECT_DIR$/controller/TreeController.js" />
+        <item url="file://$PROJECT_DIR$/controller/PlotController.js" />
+        <item url="file://$PROJECT_DIR$/controller/TabController.js" />
+      </sourceFilesUrls>
+    </properties>
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/controller/Test1.js" />
+      <root url="file://$PROJECT_DIR$/controller/Test1.js" />
+      <root url="file://$PROJECT_DIR$/model/Well.js" />
+      <root url="file://$PROJECT_DIR$/controller/CsvTecanParser.js" />
+      <root url="file://$PROJECT_DIR$/controller/CsvParser.js" />
+      <root url="file://$PROJECT_DIR$/model/Measure.js" />
+      <root url="file://$PROJECT_DIR$/controller/WindowController.js" />
+      <root url="file://$PROJECT_DIR$/model/WellReader.js" />
+      <root url="file://$PROJECT_DIR$/controller/BackgroundDefinitionController.js" />
+      <root url="file://$PROJECT_DIR$/controller/AuthenticationController.js" />
+      <root url="file://$PROJECT_DIR$/model/SmoothingCubicSpline.js" />
+      <root url="file://$PROJECT_DIR$/controller/DialogController.js" />
+      <root url="file://$PROJECT_DIR$/model/Polynomial.js" />
+      <root url="file://$PROJECT_DIR$/controller/ContextMenuController.js" />
+      <root url="file://$PROJECT_DIR$/controller/WellSelector.js" />
+      <root url="file://$PROJECT_DIR$/controller/ExperimentInfoController.js" />
+      <root url="file://$PROJECT_DIR$/controller/WellReaderController.js" />
+      <root url="file://$PROJECT_DIR$/controller/ExperimentController.js" />
+      <root url="file://$PROJECT_DIR$/controller/UploadExperimentController.js" />
+      <root url="file://$PROJECT_DIR$/controller/TreeController.js" />
+      <root url="file://$PROJECT_DIR$/controller/GlobalParametersController.js" />
+      <root url="file://$PROJECT_DIR$/controller/TabController.js" />
+      <root url="file://$PROJECT_DIR$/controller/PlotController.js" />
+    </CLASSES>
+    <SOURCES />
+  </library>
+</component>

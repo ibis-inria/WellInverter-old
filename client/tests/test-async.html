@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+   <title></title>
+   <script src="../libraries/jquery-easyui/jquery.min.js"></script>
+   <script src="../libraries/jquery.livequery.js"></script>
+   <script src="../libraries/jquery.uploadfile.min.js"></script>
+   <script src="../libraries/jquery-easyui/jquery.easyui.min.js"></script>
+
+   <script src="../libraries/highcharts/js/highcharts.js"></script>
+   <script src="../libraries/highcharts/js/modules/exporting.js"></script>
+
+   <script src="../model/WellReader.js"></script>
+   <script src="../model/Polynomial.js"></script>
+   <script src="../model/SmoothingCubicSpline.js"></script>
+   <script src="../controller/WellReaderController.js"></script>
+   <script src="../controller/ExperimentController.js"></script>
+   <script src="controller/WellSelector.js"></script>
+   <script src="../controller/BackgroundDefinitionController.js"></script>
+   <script src="../controller/TabController.js"></script>
+   <script src="../controller/TreeController.js"></script>
+   <script src="../controller/ContextMenuController.js"></script>
+   <script src="../controller/ExperimentParametersController.js"></script>
+   <script src="../controller/WindowController.js"></script>
+   <script src="../controller/DialogController.js"></script>
+   <script src="../controller/AuthenticationController.js"></script>
+   <script src="../controller/ExperimentInfoController.js"></script>
+   <script src="../controller/PlotController.js"></script>
+   <script src="../controller/UploadExperimentController.js"></script>
+   <script src="libraries/async.js"></script>
+   <script>
+      var wrc;
+
+      function post(action, data) {
+         return $.post("../server/WellReaderController.php", {action: action});
+      }
+      $(document).ready(function() {
+         wrc = new WellReaderController('tree-container', 'tabs-container');
+         post("experimentsList").done(function(result) {console.log(JSON.parse(result));});
+      });
+   </script>
+</head>
+<body>
+<body class="easyui-layout">
+<div data-options="region:'north',border:false" style="height: 80px">
+   <img src="../images/logo.png">
+</div>
+
+<div data-options="region:'west',split:true" style="width:370px;">
+   <div class="easyui-layout" data-options="fit:true">
+      <div data-options="region:'north',split:true, border: false" style="height:300px">
+         <ul id="tree-container" class="easyui-tree">
+         </ul>
+         <!-- <input type="button" value="Save" onclick="test()">-->
+      </div>
+      <div data-options="region:'center',border: false">
+         <div id="plot-selection" style="display: none; margin-left: 5px; margin-top: 5px">
+            <canvas width="350" height="250" id="microplate"></canvas>
+            <form style="margin-left: 15px">
+               <div><label for="plot-types">Plot types:</label></div>
+               <select id="plot-types"  size="6">
+                  <option value="abs-original">Absorbance - original values</option>
+                  <option value="abs-corrected">Absorbance - corrected values</option>
+                  <option value="rfu-original">RFU - original values</option>
+                  <option value="rfu-corrected">RFU - corrected values</option>
+                  <option value="rlu-original">RLU - original values</option>
+                  <option value="rlu-corrected">RLU - corrected values</option>
+               </select>
+            </form>
+         </div>
+      </div>
+   </div>
+</div>
+
+<div style="width:800px;background-color: #EEE" data-options="region:'center'">
+   <div id="tabs-container" class="easyui-tabs" style=""> </div>
+</div>
+
+<div id="context-menu" class="easyui-menu" style="width: 100px;"></div>
+
+<div id="window" class="easyui-window" data-options="closed: true"></div>
+</body>
+</html>

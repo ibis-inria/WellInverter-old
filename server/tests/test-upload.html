@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+   <title></title>
+</head>
+<body>
+<form method="post" action="../WellReaderController.php" enctype="multipart/form-data">
+   <input type="hidden" name="MAX_FILE_SIZE" value="8097152">
+   <input type="file" name="file"><br>
+    User: <input type="text" name="user" value="mp"><br>
+    Action: <select name="action">
+        <option>uploadXmlExperiment</option>
+        <option>uploadCsvTecanFile</option>
+        <option>uploadCsvFusionFile</option>
+    </select><br>
+   <input type="submit" value="Envoyer">
+</form>
+</body>
+</html>

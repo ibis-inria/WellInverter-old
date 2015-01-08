@@ -1,0 +1,14 @@
+<div id="data-fit"></div>
+
+<br>
+<form id="data-fit-form" style="display:none; margin-left: 20px" >
+    <div>
+        Rho parameter:
+        <input type="button" value="-" style="width: 20px" onclick="wrc.dataFitController.updateRho(0.1)">
+        <input type="text" style="width: 100px" id="rho" value="0.1"
+               onkeypress="if (event.keyCode == 13) {
+                wrc.dataFitController.updateRho(10.0); event.preventDefault();}">
+        <input type="button" value="+" style="width: 20px" onclick="wrc.dataFitController.updateRho(10.0)">
+    </div>
+</form>
+<br>

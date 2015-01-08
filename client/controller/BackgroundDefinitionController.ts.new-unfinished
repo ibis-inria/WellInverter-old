@@ -1,0 +1,157 @@
+///<reference path="../jquery.d.ts" />
+///<reference path="../kineticjs.d.ts" />
+///<reference path="WellReaderController.ts" />
+///<reference path="MicroplateController.ts" />
+
+class BackgroundDefinitionController {
+
+    // selection modes: wells or background well
+    static WELLS_SELECTION_MODE = 1;
+    static BACKGROUND_SELECTION_MODE = 2;
+
+    // div id of the canvas containing the microplate representation
+    public canvasContainerId: string;
+
+    // WellReader associated with me
+    public wrc: WellReaderController;
+
+    // MicroplateController associated with me
+    public microplateController: MicroplateController;
+
+    // measure sub type
+    public measureSubType: number;
+
+
+    constructor(wrc: WellReaderController, measureSubType: number, canvasContainerId: string) {
+        this.wrc = wrc;
+        this.canvasContainerId = canvasContainerId;
+        this.measureSubType = measureSubType;
+    }
+
+    /**
+     *
+     */
+    init(): void {
+        var mpc = new MicroplateController(canvasContainerId);
+        for (var w = 0; w < 96; w++) {
+            var well:Well = wrc.wr.getWell(w);
+
+            if (well.hasMeasure(this.measureSubType)) {
+                mpc.isVisible[w] = true;
+                var bgWell: Well = well.getBackgroundWell(this.measureSubType);
+                if ( bgWell != null ) {
+                    mpc.backgoundWellLabel[w] = (bgWell == null ? "" : bgWell.getName());
+                    mpc.isBackgoundWell[bgWell.id] = true;
+                }
+            }
+        }
+        this.microplateController = mpc;
+    }
+
+
+    /**
+     * Update the 'disabled' status of 'Set background' and 'Unset background' buttons
+     */
+    updateSetBackgroundButtons() {
+        var setBackgroundButton = $('#set-background-button');
+        var unsetBackgroundButton = $('#unset-background-button');
+        for (var l = 0; l < 8; l++) {
+            for (var c = 0; c < 12; c++)  {
+                if ( this.selected[l][c] ) {
+                    setBackgroundButton.removeAttr("disabled");
+                    unsetBackgroundButton.removeAttr("disabled");
+                    return;
+                }
+            }
+        }
+        setBackgroundButton.attr("disabled", "disabled");
+        unsetBackgroundButton.attr("disabled", "disabled");
+    }
+
+    /**
+     * Set background well of selected Wells
+     */
+    setBackgroundWell(): void {
+        for (var l = 0; l < 8; l++) {
+            for (var c = 0; c < 12; c++)  {
+                if ( this.selected[l][c] ) {
+                    this.wrc.wr.wells[12*l + c].setBackgroundWell(this.measureSubType, this.selectedBackGroundWell);
+                    this.selected[l][c] = false;
+                }
+            }
+        }
+        this.selectedBackGroundWell = null;
+        this.toggleSelectionMode(BackgroundDefinitionController.WELLS_SELECTION_MODE);
+        this.wrc.experimentController.saveExperiment();
+    }
+
+    /**
+     * Toggle selection mode: are we selecting wells or background wells in microplate ?
+     * @param mode WELLS_SELECTION_MODE or BACKGROUND_SELECTION_MODE
+     */
+    toggleSelectionMode(mode): void {
+        if ( mode == BackgroundDefinitionController.BACKGROUND_SELECTION_MODE ) {
+            var sel: any = null;
+            for (var l = 0; l < 8; l++) {
+                for (var c = 0; c < 12; c++)  {
+                    if ( this.selected[l][c] ) {
+                        sel = {l: l, c: c};
+                        break;
+                    }
+                }
+            }
+            if ( sel != null ) {
+                this.selectionMode = mode;
+                //this.updateSetBackgroundButtons();
+                $('#set-background-button').attr("disabled", "disabled");
+                $('#unset-background-button').attr("disabled", "disabled");
+                $('#background-definition-tip').html("Click on background well.");
+            }
+        }
+        else {
+            this.selectionMode = mode;
+            $('#background-definition-tip').html(
+                "1. Select the wells for which you want to set/unset the background well: click a well, a column name or a line name, or draw rectangular selection.<br>" +
+                "2. Click the 'Set background'/'Unset background' button to set/unset the background of selected wells");
+        }
+
+        this.wrc.wr.resetComputedData();
+    }
+
+    /**
+     * Show view in tab
+     */
+    showView(): void {
+
+        //this.closeExistingMicroplateViews();
+
+        this.wrc.tabController.showTab(TabController.BACKGROUND_DEFINITION_TAB);
+
+        var bdc: BackgroundDefinitionController = this;
+        $("#background-microplate").livequery(function(){    // livequery() waits for view complete loading
+            bdc.microplateController.draw();
+            //bdc.toggleSelectionMode(BackgroundDefinitionController.WELLS_SELECTION_MODE);
+            //bdc.updateSetBackgroundButtons();
+            //bdc.initMouseHandler();
+            //$("#measure-subtype").html(wrc.wr.measureSubTypes[bdc.measureSubType].name);
+        });
+
+    }
+
+    /**
+     * Close existing BackgroundDefinition and WellSet views because it would otherwise generate ID uniqueness conflicts
+     * A better solution would be to use a JS template system like Mustache
+     */
+    closeExistingMicroplateViews(): void {
+/*
+        var tc = this.wrc.tabController;
+        if ( tc.existsTab(TabController.BACKGROUND_DEFINITION_TAB) )
+            tc.closeTab(TabController.BACKGROUND_DEFINITION_TAB);
+
+        for(var i=0; i < this.wrc.wr.wellSets.length; i++) {
+            if ( tc.existsTab(TabController.WELL_SET_DEFINITION_TAB, this.wrc.wr.wellSets[i]) )
+                tc.closeTab(TabController.WELL_SET_DEFINITION_TAB, this.wrc.wr.wellSets[i]);
+        }
+ */
+    }
+}

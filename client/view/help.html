@@ -1,0 +1,155 @@
+<div style="margin: 10px" id="help">
+
+    <div class="section" id="intro">
+
+        <h1>WellReader 4 help pages</h1>
+
+    </div>
+
+    <div class="section" id="experiment-handling-section">
+
+        <h1>Experiment files operations</h1>
+
+        <p>WellReader deals with experiments made using Tecan microplate reader (TMR).</p>
+        <p>In order to be processed using WellReader, the following constraints must be met:</p>
+        <ul>
+            <li>[A compléter]</li>
+        </ul>
+
+        <p>Before processing an experiment using WellReader, it has to be converted to CSV format.</p>
+        <p>
+            Allowed characters in an experiment file names are:
+            <span class="character-class">a-z</span>, <span class="character-class">A-Z</span>, <span class="character-class">0-9</span>,
+            <span class="character-class">_</span> and <span class="character-class">-</span>.
+        </p>
+
+
+
+        <h2>Experiment storage</h2>
+
+        <p>
+            In WellReader, experiments files are not stored locally on your are disk. They must be uploaded on WellReader
+            server before first processing. once the experiment is uploaded, it resides on the server and any modification
+            of the experiment data is performed on the server.
+        </p>
+        <p>
+            At any time, you can download the actual version of an experiment file. It is even advised to do so, since Wellreader
+            server may crash.
+        </p>
+
+        <h2>Experiment upload</h2>
+
+        <p>
+            To upload an experiment:
+        </p>
+        <p>
+            1. Right-click on the <i>experiments</i> node, and select <i>Upload a Tecan CSV experiment file</i>.
+        </p>
+        <div><img src="help-screenshots/upload-csv-experiment.png"></div>
+        <p>The following window appears:</p>
+        <div><img src="help-screenshots/upload-csv-experiment-window.png"></div>
+        <p>
+            2. Click on <i>Select Tecan file to upload (.csv)</i> and choose the CSV file corresponding to the experiment you want to upload,
+            or drag a CSV file from your file explorer and drop it into the dashed rectangle.
+        </p>
+        <p>
+            Depending on the Internet connection speed and the size of the CSV file, the upload process may take more or less time.
+            Once uploaded, the uploaded experiment appears in the <i>Experiments</i> list.
+        </p>
+        <div><img src="help-screenshots/tutorial-uploaded.png"></div>
+        <p>
+            3. Click the experiment node to develop the experiment operations in the <i>Experiments</i> list.
+        </p>
+        <div><img src="help-screenshots/experiments-tree.png"></div>
+
+        <h2>Experiment download</h2>
+
+        <p>Once an experiment is uploaded on the server, you can download it anytime.</p>
+        <p>
+            To download an experiment:
+        </p>
+        <p>
+            1. Right-click on the experiment node, and select <i>Download Well Reader (JSON) experiment file</i>.
+        </p>
+        <div><img src="help-screenshots/download-experiment.png"></div>
+        <p>
+            Experiments are internally stored using a Javascript format called JSON.
+        </p>
+
+        <h2>Experiment re-upload</h2>
+
+        <p>
+            Normally, this operation should be seldom used, since an experiment is stored on the server and stays there, unless
+            you delete it. However, if you have inadvertently deleted an experiment, or want to revert to a previous version
+            of an experiment, you may wish to re-upload a previously downloaded version of the experiment.</p>
+        <p>
+            To re-upload an experiment:
+        </p>
+        <p>
+            1. Right-click on the experiment node, and select <i>Upload a Well Reader (JSON) experiment file</i>.
+        </p>
+        <div><img src="help-screenshots/upload-json-experiment.png"></div>
+        <p>
+            2. Click on <i>Select JSON file to upload (.json)</i> and choose the JSON file corresponding to the experiment you want to upload,
+            or drag a JSON file from your file explorer and drop it into the dashed rectangle.
+        </p>
+
+        <h2>Delete an experiment</h2>
+
+        <p>Before tou delete an experiment, you should download it so as to be able to restore it.</p>
+        <p>
+            To delete an experiment:
+        </p>
+        <p>
+            1. Right-click on the experiment node to delete, and select <i>Delete experiment</i>.
+        </p>
+        <div><img src="help-screenshots/delete-experiment.png"></div>
+
+        <h2>Rename an experiment</h2>
+
+        <p>
+            To rename an experiment:
+        </p>
+        <p>
+            1. Right-click on the experiment node to rename, and select <i>Rename experiment</i>.
+        </p>
+        <div><img src="help-screenshots/rename-experiment.png"></div>
+        <p>
+            2. Modify the name of the experiment. Allowed characters in an experiment name are:
+            <span class="character-class">a-z</span>, <span class="character-class">A-Z</span>, <span class="character-class">0-9</span>,
+            <span class="character-class">_</span> and <span class="character-class">-</span>.
+        </p>
+        <p>
+            3. Type <i>Enter</i> to validate the change.
+        </p>
+
+
+    </div>
+
+    <div class="section" id="experiment-parameters-section">
+
+        <h1>Experiment parameters</h1>
+
+        <p>This tab is a form where you enter parameters for the experiment.</p>
+        <ol> There are three kinds of parameters:
+            <li>
+                <b>outlier detection parameters.</b>These parameters specify how Wellfare [A compléter].
+                There is one set of parameters for each measure type
+            </li>
+            <li>
+                <b>Default background values.</b> There is one parameter for each measure type. These parameter values are overloaded for a given well
+                and a given measure type if a background well is defined for this well and this measure type.
+            </li>
+            <li>
+                <b>Curve synchronization.</b>[A compléter].
+            </li>
+        </ol>
+        <p>Hovering the with the mouse displays help about the corresponding parameter.</p>
+    </div>
+
+    <div class="section" id="outlier-detection-section">
+
+        <h1>Outlier detection</h1>
+
+        <p>This tab is a form where you enter parameters for the experiment.</p>
+</div>

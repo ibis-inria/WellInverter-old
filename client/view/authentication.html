@@ -1,0 +1,37 @@
+<form style="padding:10px 20px 10px 40px;">
+   <p>
+       <label for="login" style="margin-right: 25px;">Login:</label>
+       <input type="text" id="login">
+   </p>
+   <p>
+       <label for="password">Password:</label>
+       <input type="password"  id="password" onKeyPress="return submitEnter(this,event)">
+   </p>
+
+    <div style="padding:5px;text-align:center;">
+      <input type="button" value="Ok" onclick="wrc.authenticationController.authenticationCheck()">
+   </div>
+   <div id="auth-failure" style="margin-top: 10px; color: red"></div>
+</form>
+
+<script type="text/javascript">
+
+    function submitEnter(myfield,e) {
+        var keycode;
+        if (window.event)
+            keycode = window.event.keyCode;
+        else if (e)
+            keycode = e.which;
+        else return true;
+
+        if (keycode == 13) {
+            wrc.authenticationController.authenticationCheck();
+            return false;
+        }
+        else return true;
+    }
+
+    window.onload = function() {
+        document.getElementById("login").focus();
+    }
+</script>

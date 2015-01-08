@@ -1,0 +1,286 @@
+///<reference path="../jquery.d.ts" />
+///<reference path="../kineticjs.d.ts" />
+///<reference path="WellReaderController.ts" />
+
+class BackgroundDefinitionController {
+
+    // selection modes: wells or background well
+    static WELLS_SELECTION_MODE = 1;
+    static BACKGROUND_SELECTION_MODE = 2;
+
+    // div id of the canvas containing the microplate representation
+    public canvasContainerId: string;
+
+    public zoomFactor: number = 1.5;
+
+    public wellSize: number = 20;
+
+    public delta = 6;
+
+    // WellReader associated with me
+    public wrc: WellReaderController;
+
+
+
+
+
+    // Indicates whether a mousedown event within selection happened
+    selection = false;
+
+    // selection mode: are we selecting wells or background wells in microplate ? // WELLS_SELECTION_MODE or BACKGROUND_SELECTION_MODE
+    public selectionMode: number = 1;  // WELLS_SELECTION_MODE or BACKGROUND_SELECTION_MODE
+
+    // measure sub type
+    public measureSubType: number;
+
+    // matrix indicating for each line and column whether the well is selected
+    public selected: boolean[][];
+
+    //  selected background well. null: no selected background well
+    public selectedBackGroundWell: Well;
+
+
+    constructor(wrc: WellReaderController, measureSubType: number, canvasContainerId: string) {
+        this.wrc = wrc;
+        this.canvasContainerId = canvasContainerId;
+        this.measureSubType = measureSubType;
+
+        this.selected = [];
+        for (var l = 0; l < 8; l++)
+            this.selected[l] = [false, false, false, false, false, false, false, false, false, false, false, false];
+    }
+
+    /**
+     * Called on construction AND on drawMicroplate
+     */
+    initSelection(): void {
+    }
+
+    /**
+     * Init mouse handling events
+     */
+    initMouseHandler(): void {
+
+    }
+
+    microplateLayerWidth(): number {
+        return 12 * this.wellSize + 13 * this.delta;
+    }
+
+    microplateLayerHeight(): number {
+        return 8 * this.wellSize + 9 * this.delta;
+    }
+
+    zoom(val: number): number {
+        return  Math.floor(val * this.zoomFactor);
+    }
+
+    draw(): void {
+
+        var well = new Array(8);
+
+        var stage = new Kinetic.Stage({
+            container: "background-microplate",
+            width: this.zoom(this.microplateLayerWidth() + 30),
+            height: this.zoom(this.microplateLayerHeight() + 30)
+        });
+
+
+        var bgLayer = new Kinetic.Layer();
+        stage.add(bgLayer);
+
+        bgLayer.add(new Kinetic.Rect({width: this.zoom(this.microplateLayerWidth() + 30), height: this.zoom(this.microplateLayerHeight() + 30), fill: "#e82"}));
+
+        var fontSize = 12 ;
+        for (var l = 0; l < 8; l++) {
+            var char = String.fromCharCode(65 + l);
+            bgLayer.add(new Kinetic.Text({
+                x: this.zoom(5),
+                y: this.zoom(20 - fontSize/2 + this.delta + this.wellSize/2 + l * (this.wellSize + this.delta)),
+                text: char,
+                fontSize: this.zoom(fontSize),
+                fontFamily: 'Arial',
+                fontStyle: "bold",
+                fill: '#333'}));
+        }
+
+        for (var c = 0; c < 12; c++) {
+            bgLayer.add(new Kinetic.Text({
+                x: this.zoom(20 - fontSize/2  + this.delta + this.wellSize/2 + c * (this.wellSize + this.delta)),
+                y: this.zoom(5),
+                text: "" + (c+1),
+                fontSize: this.zoom(fontSize),
+                fontFamily: 'Arial',
+                fontStyle: "bold",
+                fill: '#333'}));
+        }
+
+        bgLayer.draw();
+
+        var mpLayer = new Kinetic.Layer({x: this.zoom(20), y: this.zoom(20)});
+        stage.add(mpLayer);
+
+        mpLayer.add(new Kinetic.Rect({width: this.zoom(this.microplateLayerWidth()), height: this.zoom(this.microplateLayerHeight()), fill: "#eee"}));
+        var bdc = this;
+        for (var l = 0; l < 8; l++) {
+            well[l] = new Array(12);
+            for (var c = 0; c < 12; c++) {
+                well[l][c] = null;
+
+                var w = this.wrc.wr.getWell(12*l + c);
+                var m = w.getMeasure(this.measureSubType);
+                var bw = w.getBackgroundWell(this.measureSubType);
+                var isb = w.isBackground(this.measureSubType);
+                if ( m != null ) {
+                    well[l][c] = new Kinetic.Circle({
+                        x: this.zoom(this.delta + this.wellSize / 2 + c * (this.wellSize + this.delta)),
+                        y: this.zoom(this.delta + this.wellSize / 2 + l * (this.wellSize + this.delta)),
+                        radius: this.zoom(this.wellSize / 2),
+                        stroke: (isb ? 'green' : '#666'),
+                        strokeWidth: ( this.selected[l][c] ? 5 : 2 ),
+                        fill: ( m == null ? "#aaa" : (bw != null ? 'lightgreen' : 'lightgray'))
+                    });
+                    well[l][c].l = l;
+                    well[l][c].c = c;
+                    well[l][c].on('click', function () {bdc.clickHandler(this);});
+                    mpLayer.add(well[l][c]);
+
+                    if (bw != null) {
+                        var backgroundCol = bw.getColumn();
+                        var dx = ( backgroundCol >= 9 ? 7 : 4 );
+                        mpLayer.add(new Kinetic.Text({
+                            x: this.zoom(this.delta - dx + this.wellSize / 2 + c * (this.wellSize + this.delta)),
+                            y: this.zoom(this.delta - 4 + this.wellSize / 2 + l * (this.wellSize + this.delta)),
+                            text: bw.getName(),
+                            fontSize: 12,
+                            fontFamily: 'Arial',
+                            fill: 'black'
+                        }));
+                    }
+                }
+            }
+        }
+        mpLayer.draw();
+
+    }
+
+    /**
+     * Handle click on the microplate
+     */
+    clickHandler(w: any): void {
+        if (this.selectionMode == BackgroundDefinitionController.WELLS_SELECTION_MODE)
+            this.selected[w.l][w.c] = ! this.selected[w.l][w.c];
+        else {
+            this.selectedBackGroundWell = wrc.wr.getWell(12 * w.l + w.c);
+            this.setBackgroundWell();
+        }
+        this.draw();
+        this.updateSetBackgroundButtons();
+    }
+
+    /**
+     * Update the 'disabled' status of 'Set background' and 'Unset background' buttons
+     */
+    updateSetBackgroundButtons() {
+        var setBackgroundButton = $('#set-background-button');
+        var unsetBackgroundButton = $('#unset-background-button');
+        for (var l = 0; l < 8; l++) {
+            for (var c = 0; c < 12; c++)  {
+                if ( this.selected[l][c] ) {
+                    setBackgroundButton.removeAttr("disabled");
+                    unsetBackgroundButton.removeAttr("disabled");
+                    return;
+                }
+            }
+        }
+        setBackgroundButton.attr("disabled", "disabled");
+        unsetBackgroundButton.attr("disabled", "disabled");
+    }
+
+    /**
+     * Set background well of selected Wells
+     */
+    setBackgroundWell(): void {
+        for (var l = 0; l < 8; l++) {
+            for (var c = 0; c < 12; c++)  {
+                if ( this.selected[l][c] ) {
+                    this.wrc.wr.wells[12*l + c].setBackgroundWell(this.measureSubType, this.selectedBackGroundWell);
+                    this.selected[l][c] = false;
+                }
+            }
+        }
+        this.selectedBackGroundWell = null;
+        this.toggleSelectionMode(BackgroundDefinitionController.WELLS_SELECTION_MODE);
+        this.wrc.experimentController.saveExperiment();
+    }
+
+    /**
+     * Toggle selection mode: are we selecting wells or background wells in microplate ?
+     * @param mode WELLS_SELECTION_MODE or BACKGROUND_SELECTION_MODE
+     */
+    toggleSelectionMode(mode): void {
+        if ( mode == BackgroundDefinitionController.BACKGROUND_SELECTION_MODE ) {
+            var sel: any = null;
+            for (var l = 0; l < 8; l++) {
+                for (var c = 0; c < 12; c++)  {
+                    if ( this.selected[l][c] ) {
+                        sel = {l: l, c: c};
+                        break;
+                    }
+                }
+            }
+            if ( sel != null ) {
+                this.selectionMode = mode;
+                //this.updateSetBackgroundButtons();
+                $('#set-background-button').attr("disabled", "disabled");
+                $('#unset-background-button').attr("disabled", "disabled");
+                $('#background-definition-tip').html("Click on background well.");
+            }
+        }
+        else {
+            this.selectionMode = mode;
+            $('#background-definition-tip').html(
+                "1. Select the wells for which you want to set/unset the background well: click a well, a column name or a line name, or draw rectangular selection.<br>" +
+                "2. Click the 'Set background'/'Unset background' button to set/unset the background of selected wells");
+        }
+
+        this.wrc.wr.resetComputedData();
+    }
+
+    /**
+     * Show view in tab
+     */
+    showView(): void {
+
+        //this.closeExistingMicroplateViews();
+
+        this.wrc.tabController.showTab(TabController.BACKGROUND_DEFINITION_TAB);
+
+        var bdc: BackgroundDefinitionController = this;
+        $("#background-microplate").livequery(function(){    // livequery() waits for view complete loading
+            bdc.draw();
+            //bdc.toggleSelectionMode(BackgroundDefinitionController.WELLS_SELECTION_MODE);
+            //bdc.updateSetBackgroundButtons();
+            //bdc.initMouseHandler();
+            //$("#measure-subtype").html(wrc.wr.measureSubTypes[bdc.measureSubType].name);
+        });
+
+    }
+
+    /**
+     * Close existing BackgroundDefinition and WellSet views because it would otherwise generate ID uniqueness conflicts
+     * A better solution would be to use a JS template system like Mustache
+     */
+    closeExistingMicroplateViews(): void {
+/*
+        var tc = this.wrc.tabController;
+        if ( tc.existsTab(TabController.BACKGROUND_DEFINITION_TAB) )
+            tc.closeTab(TabController.BACKGROUND_DEFINITION_TAB);
+
+        for(var i=0; i < this.wrc.wr.wellSets.length; i++) {
+            if ( tc.existsTab(TabController.WELL_SET_DEFINITION_TAB, this.wrc.wr.wellSets[i]) )
+                tc.closeTab(TabController.WELL_SET_DEFINITION_TAB, this.wrc.wr.wellSets[i]);
+        }
+ */
+    }
+}

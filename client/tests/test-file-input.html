@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <style>
+        #fileElem {
+            /* Note: display:none on the input won't trigger the click event in WebKit.
+              Setting visibility: hidden and height/width:0 works great. */
+            visibility: hidden;
+            width: 0;
+            height: 0;
+        }
+        #fileSelect {
+            /* style the button any way you want */
+        }
+    </style>
+</head>
+<body>
+
+
+<input type="file" id="fileElem">
+<a href="javascript:toto()">Select some files</a>
+
+<script>
+function toto() {
+        document.querySelector('#fileElem').click();
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,74 @@
+<script id="selector-form-template" type="text/x-handlebars-template">
+    {{#selects}}
+    <div id="plot-chooser-{{num}}" style="{{#if notFirst}}display:none{{/if}}">
+        <div style="background-color: lightgrey">
+            <select id="measure-{{num}}" style="width:90px" onchange="wrc.plotSelector.measureChanged({{num}}); wrc.plotController.updatePlots()">
+                <option value="">---</option>
+                {{#opts}}
+                    <option value="{{value}}">{{name}}</option>
+                {{/opts}}
+            </select>
+            <select id="plot-type-{{num}}" style="width:115px" onchange="wrc.plotController.updatePlots()">
+                <option value="">---</option>
+                <option id="originalSignal-{{num}}" value="originalSignal" selected>Original data</option>
+                <option id="outlierFreeSignal-{{num}}" value="outlierFreeSignal">Outliers-free data</option>
+                <option id="synchronized-{{num}}" value="synchronized">Synchronized data</option>
+                <option id="subtractedBackground-{{num}}" value="subtractedBackground">Corrected data</option>
+                <option id="growthRate-{{num}}" value="growthRate">Growth rate</option>
+                <option id="promoterActivity-{{num}}" value="promoterActivity">Promoter activity</option>
+                <option id="reporterConcentration-{{num}}" value="reporterConcentration">Protein concentration</option>
+            </select>
+
+            <input id="show-mean-{{num}}" type="checkbox" disabled onchange="wrc.plotController.updatePlots()">
+            <input id="show-std-error-{{num}}" type="checkbox" disabled onchange="wrc.plotController.updatePlots()" style="margin-left: 20px">
+
+            <input type="button" id="minus-{{num}}" value="-" onclick="wrc.plotSelector.removePlotClickHandler({{num}}); wrc.plotController.updatePlots()" style="margin-left: 30px">
+
+        </div>
+    </div>
+    {{/selects}}
+</script>
+
+<div id="plot-selector" style="display: none; margin-left: 5px; margin-top: 5px">
+    <canvas width="350" height="225" id="microplate"></canvas>
+
+    <form id="plot-parameters">
+        <div id="color-palette"></div>
+        <!--
+            <div id="div-ws1">
+                <label for="ws1">Well set:</label>
+                <select id="ws1" onchange="wrc.plotSelector.wellSetChanged(1)"><option value="">---</option></select>
+                <input type="button" id="minus-ws1" value="-" style="display: none" onclick="wrc.plotSelector.removeWellSetClickHandler(1)">
+            </div>
+            <div  id="div-ws2" style="display: none">
+                <label for="ws2">Well set:</label>
+                <select id="ws2" onchange="wrc.plotSelector.wellSetChanged(2)"><option value="">---</option></select>
+                <input type="button"  id="minus-ws2" value="-" onclick="wrc.plotSelector.removeWellSetClickHandler(2)">
+            </div>
+            <div  id="div-ws3" style="display: none">
+                <label for="ws3">Well set:</label>
+                <select id="ws3" onchange="wrc.plotSelector.wellSetChanged(3)"><option value="">---</option></select>
+                <input type="button"  id="minus-ws3" value="-" onclick="wrc.plotSelector.removeWellSetClickHandler(3)">
+            </div>
+            <div  id="div-ws4" style="display: none">
+                <label for="ws4">Well set:</label>
+                <select id="ws4" onchange="wrc.plotSelector.wellSetChanged(4)"><option value="">---</option></select>
+                <input type="button"  id="minus-ws4" value="-" onclick="wrc.plotSelector.removeWellSetClickHandler(4)">
+            </div>
+            <div  id="div-ws5" style="display: none">
+                <label for="ws5">Well set:</label>
+                <select id="ws5" onchange="wrc.plotSelector.wellSetChanged(5)"><option value="">---</option></select>
+                <input type="button"  id="minus-ws5" value="-" onclick="wrc.plotSelector.removeWellSetClickHandler(5)">
+            </div>
+            <div>
+                <input type="button"  id="plus-ws" value="+" onclick="wrc.plotSelector.addWellSetClickHandler()">
+            </div>
+        -->
+        <div>Measure<span style="margin-left:60px">Data</span><span style="margin-left:75px">Mean</span><span style="margin-left:10px">Std.Err.</span></div>
+        <div id="plot-selector-form"></div>
+        <div>
+            <input type="button"  id="plus" value="+" onclick="wrc.plotSelector.addPlotClickHandler()">
+        </div>
+
+    </form>
+</div>

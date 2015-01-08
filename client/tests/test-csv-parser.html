@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+   <title></title>
+   <script src="../model/WellReader.js"></script>
+   <script src="../model/Well.js"></script>
+   <script src="../model/Measure.js"></script>
+   <script src="../controller/CsvParser.js"></script>
+   <script src="../controller/CsvTecanParser.js"></script>
+<script>
+   var w = new WellReader();
+   var parser;
+   console.log(w.getWell(0).getName());
+   function readfile(f) {
+      var reader = new FileReader();
+      reader.readAsText(f);
+      reader.onload = function() {
+         var text = reader.result;
+
+         parser=new CsvTecanParser(text, ";");
+         parser.parse();
+      };
+      reader.onerror = function(e) {
+         console.log("Error", e);
+      };
+   }
+</script>
+</head>
+<body>
+Select the file to parse:
+<input type="file" onchange="readfile(this.files[0])">
+</body>
+</html>

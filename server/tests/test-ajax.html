@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+   <title>test Ajax</title>
+   <script src="../../client/libraries/jquery-easyui/jquery.min.js"></script>
+<script>
+   $.ajax({
+      url:"../server/WellReaderController.php",
+      type: 'post',
+      data: {action: "experimentsList"},
+      success: function(output) {
+         if ( output != "" )
+            console.log(output);
+      }
+   });
+</script>
+
+</head>
+<body>
+
+</body>
+</html>

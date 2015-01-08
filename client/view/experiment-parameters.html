@@ -1,0 +1,110 @@
+ <script src="../libraries/handlebars-v2.0.0.js"></script>
+
+<script id="tpl-background" type="text/x-handlebars-template">
+    <fieldset>
+        <legend>Default background value</legend>
+        {{#each measureSubTypes}}
+        <div class="field">
+            <label for="{{name}}_background_value">Default background value for {{name}} (0-100)</label>
+            <input type="text" id="{{name}}_background_value" class="easyui-validatebox"
+                   data-options="validType:'numberBetween[0,100]'">
+            <img src="../images/help.png" class="easyui-tooltip">
+        </div>
+        {{/each}}
+    </fieldset>
+</script>
+
+
+<script id="tpl-outlier" type="text/x-handlebars-template">
+{{#each measureSubTypes}}
+    <fieldset>
+        <legend>Outliers detection for {{name}}</legend>
+        <div class="field" style="margin-bottom: 20px">
+            <label for="{{name}}_outlier_marks_tolerance">Outlier filtering threshold (0.0-10000.0)</label>
+            <input type="text" id="{{name}}_outlier_marks_tolerance" class="easyui-validatebox"
+                   data-options="validType:'numberBetween[0,100]'">
+            <img src="../images/help.png" class="easyui-tooltip">
+        </div>
+        <div class="field">
+            <label for="{{name}}_percentile_above">Proportion of up-lying points to keep (> 0.0)</label>
+            <input type="text" id="{{name}}_percentile_above" class="easyui-validatebox"
+                   data-options="validType:'numberBetween[0,1000000]'">
+            <img src="../images/help.png" class="easyui-tooltip">
+        </div>
+        <div class="field">
+            <label for="{{name}}_percentile_below">Proportion of down-lying points to keep (0-100)</label>
+            <input type="text" id="{{name}}_percentile_below" class="easyui-validatebox"
+                   data-options="validType:'numberBetween[0,100]'">
+            <img src="../images/help.png" class="easyui-tooltip">
+        </div>
+        <div class="field">
+            <label for="{{name}}_niter_above">Number of times the up-filter is repeated (0-10)</label>
+            <input type="text" id="{{name}}_niter_above" class="easyui-validatebox"
+                   data-options="validType:'numberBetween[0,10]'">
+            <img src="../images/help.png" class="easyui-tooltip">
+        </div>
+        <div class="field">
+            <label for="{{name}}_niter_below">Number of times the down-filter is repeated (0-10)</label>
+            <input type="text" id="{{name}}_niter_below" class="easyui-validatebox"
+                   data-options="validType:'numberBetween[0,10]'">
+            <img src="../images/help.png" class="easyui-tooltip">
+        </div>
+        <div class="field">
+            <label for="{{name}}_goal_above">Algo will stop when second derivatives are above (0-1)</label>
+            <input type="text" id="{{name}}_goal_above" class="easyui-validatebox"
+                   data-options="validType:'numberBetween[0,1]'">
+            <img src="../images/help.png" class="easyui-tooltip">
+        </div>
+        <div class="field">
+            <label for="{{name}}_goal_below">Algo will stop when -second derivatives are below (0-1)</label>
+            <input type="text" id="{{name}}_goal_below" class="easyui-validatebox"
+                   data-options="validType:'numberBetween[0,1]'">
+            <img src="../images/help.png" class="easyui-tooltip">
+        </div>
+        <div class="field">
+            <label for="{{name}}_smoothing_win">Window size (the more, the smoother) (0-10)</label>
+            <input type="text" id="{{name}}_smoothing_win" class="easyui-validatebox"
+                   data-options="validType:'numberBetween[0,10]'">
+            <img src="../images/help.png" class="easyui-tooltip">
+        </div>
+        <div class="field">
+            <label for="{{name}}_nstd">Keep points that are less than "nstd*std" from the smooth (0-5)</label>
+            <input type="text" id="{{name}}_nstd" class="easyui-validatebox"
+                   data-options="validType:'numberBetween[0,5]'">
+            <img src="../images/help.png" class="easyui-tooltip">
+        </div>
+    </fieldset>        
+{{/each}}
+</script>
+
+
+<form id="experiment-parameters">
+    <fieldset>
+        <legend>Curve synchronization</legend>
+        <div class="field">
+            <label for="max_shift">Max shift (0-500)</label>
+            <input type="text" id="max_shift" class="easyui-validatebox"
+                   data-options="validType:'numberBetween[0,500]'">
+            <img src="../images/help.png" class="easyui-tooltip">
+        </div>
+    </fieldset>
+
+   <div id="buttons">
+      <input type="button" value="Save" onclick="wrc.experimentParametersController.submitForm()">
+      <input type="button" value="Cancel" onclick="wrc.experimentParametersController.closeForm()">
+   </div>
+</form>
+
+<script>
+    var backgroundTplScript = $("#tpl-background").html();
+    var backgroundTemplate = Handlebars.compile (backgroundTplScript);
+    $("#experiment-parameters").prepend (backgroundTemplate(wrc.wr));
+
+    var outlierTplScript = $("#tpl-outlier").html();
+    var outlierTemplate = Handlebars.compile (outlierTplScript);
+    $("#experiment-parameters").prepend (outlierTemplate(wrc.wr));
+
+    $( document ).ready(function() {
+        $("img").each(function() {$(this).attr('title', "Help to add here")});
+    });
+</script>

@@ -1,0 +1,36 @@
+
+<div style="margin: 10px">
+   <h2>Upload a Fusion experiment CSV File</h2>
+   <div id="fileuploader">Select Fusion file to upload (.csv)</div>
+   <div id="eventsmessage"></div>
+</div>
+<script>
+   $(document).ready(function() {
+      $("#fileuploader").uploadFile({
+         url:"../../server/WellReaderController.php",
+         allowedTypes:"csv",
+         fileName:"file",
+         multiple: false,
+         dragDropStr: "<span><b>... or drag file here.</b></span>",
+         showStatusAfterSuccess:false,
+         dynamicFormData: function() { return  { "action": "uploadCsvFusionFile", "user": Session.getUserName()}; },
+         onError: function(files, status, errMsg) {
+            $("#eventsmessage").html("Error");
+         },
+         onSuccess: function(files, data, xhr) {
+            if ( data == "" ) {
+               $("#window").window('close');
+
+                var selectedExperiment = files[0].substr(0, files[0].length-4);
+                wrc.init();
+                wrc.treeController.selectExperiment(selectedExperiment);
+            }
+            else {
+               $("#eventsmessage").html("<span style='color: red'>" + data + "</span>");
+            }
+
+         }
+      });
+   });
+</script>
+
