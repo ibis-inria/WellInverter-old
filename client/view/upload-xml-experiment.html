@@ -1,13 +1,13 @@
 
 <div style="margin: 10px">
-   <h2>Upload a WellReader experiment</h2>
+   <h2>Upload a WellInverter experiment</h2>
    <div id="fileuploader">Select file to upload (.xml)</div>
    <div id="eventsmessage"></div>
 </div>
 <script>
    $(document).ready(function() {
       $("#fileuploader").uploadFile({
-         url:"../../server/WellReaderController.php",
+         url:"../../server/WellInverterController.php",
          allowedTypes:"xml",
          fileName:"file",
          multiple: false,

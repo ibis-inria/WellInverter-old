@@ -1,5 +1,5 @@
 ///<reference path="../easyui.d.ts" />
-///<reference path="WellReaderController.ts" />
+///<reference path="WellInverterController.ts" />
 
 declare var $: JQueryStatic;
 
@@ -9,9 +9,9 @@ declare var $: JQueryStatic;
 class WindowController {
 
     /**
-     * WellReaderController associated with me
+     * WellInverterController associated with me
      */
-    public wrc: WellReaderController;
+    public wic: WellInverterController;
 
     /**
      * id of the div containing the window
@@ -31,8 +31,8 @@ class WindowController {
     /**
      * Constructor
      */
-    constructor(wrc: WellReaderController, url: string, content?: string) {
-        this.wrc = wrc;
+    constructor(wic: WellInverterController, url: string, content?: string) {
+        this.wic = wic;
         this.windowId = "window";
         this.url = url;
         this.content = url;

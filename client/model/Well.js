@@ -1,4 +1,4 @@
-///<reference path="../model/WellReader.ts" />
+///<reference path="WellInverter.ts" />
 ///<reference path="../model/Measure.ts" />
 var Well = (function () {
     /**
@@ -48,7 +48,7 @@ var Well = (function () {
      */
     Well.prototype.getBackgroundWell = function (measureSubType) {
         var m = this.getMeasure(measureSubType);
-        return (m == null || m.backgroundReferenceWell == null || m.backgroundReferenceWell == -1 ? null : wrc.wr.getWell(m.backgroundReferenceWell));
+        return (m == null || m.backgroundReferenceWell == null || m.backgroundReferenceWell == -1 ? null : wic.wr.getWell(m.backgroundReferenceWell));
     };
     /**
      * Set background well for given measure subtype.
@@ -64,7 +64,7 @@ var Well = (function () {
         if (prevBgWell != null) {
             for (var w = 0; w <= 95; w++) {
                 var foundWellWithBackgroundWellNumber = false;
-                if (wrc.wr.getWell(w).getBackgroundWell(measureSubType) == prevBgWell && w != this.id) {
+                if (wic.wr.getWell(w).getBackgroundWell(measureSubType) == prevBgWell && w != this.id) {
                     foundWellWithBackgroundWellNumber = true;
                     break;
                 }

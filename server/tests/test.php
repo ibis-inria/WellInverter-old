@@ -9,4 +9,4 @@ function parse ($url) {
     echo "\n\n<br>" . $json;
 }
 
-parse("http://localhost/WellReader4/Exp_07_11_19.xml");
+parse("http://localhost/WellInverter/Exp_07_11_19.xml");

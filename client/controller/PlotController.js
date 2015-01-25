@@ -1,5 +1,5 @@
 ///<reference path="../highcharts.d.ts" />
-///<reference path="WellReaderController.ts" />
+///<reference path="WellInverterController.ts" />
 ///<reference path="PlotSelector.ts" />
 ///<reference path="../model/Sample.ts" />
 /**
@@ -9,7 +9,7 @@ var PlotController = (function () {
     /**
      * Constructor
      */
-    function PlotController(wrc) {
+    function PlotController(wic) {
         /**
          * Y-axis scale type (scaleType[0]: left-most y-axis, scaleType[1]: right-most y-axis): "linear" | "logarithmic"
          */
@@ -36,20 +36,20 @@ var PlotController = (function () {
          * Point markers shapes used for plotting
          */
         this.markerSymbols = ["circle", "diamond", "triangle", "square", "triangle-down"];
-        this.wrc = wrc;
+        this.wic = wic;
     }
     /**
      * Update plots when an element of the plot selector has changed
      */
     PlotController.prototype.updatePlots = function () {
         var plotsCount = 0;
-        var selectedWells = this.wrc.plotSelector.selectedWells();
+        var selectedWells = this.wic.plotSelector.selectedWells();
         this.updateColors(selectedWells);
         // Computation of the different y-axis
         var yAxis = []; // yAxis object
         var yAxisNames = []; // yAxis name
         var yAxisRefs = []; // reference to yAxis used for each series
-        for (var p = 1; p <= this.wrc.plotSelector.plotsCount; p++) {
+        for (var p = 1; p <= this.wic.plotSelector.plotsCount; p++) {
             var measureSubTypeText = $('#measure-' + p + " option:selected").text();
             var plotTypeText = $("#plot-type-" + p + " option:selected").text();
             var title = "";
@@ -88,7 +88,11 @@ var PlotController = (function () {
                 chart: { renderTo: 'plot', zoomType: 'x', height: 650 },
                 credits: { enabled: false },
                 legend: { enabled: true },
-                xAxis: { title: { text: "time (min)" } },
+                xAxis: { title: { text: "Time (min)" }, labels: {
+                    formatter: function () {
+                        return Highcharts.numberFormat(this.value, 0, '', ''); // Remove thousands separator
+                    }
+                } },
                 yAxis: yAxis,
                 tooltip: { enabled: true },
                 plotOptions: {
@@ -109,7 +113,7 @@ var PlotController = (function () {
             for (var w = 0; w < selectedWells.length; w++) {
                 var well = selectedWells[w];
                 wellNames += well.getName() + " ";
-                for (var p = 1; p <= this.wrc.plotSelector.plotsCount; p++) {
+                for (var p = 1; p <= this.wic.plotSelector.plotsCount; p++) {
                     var plotType = $('#plot-type-' + p).val();
                     var measureSubType = $('#measure-' + p).val();
                     var plotTypeText = $("#plot-type-" + p + " option:selected").text();
@@ -130,7 +134,7 @@ var PlotController = (function () {
                                 options.series.push({
                                     data: chartData,
                                     color: this.getPlotColor(measure),
-                                    name: well.getName() + ": " + wrc.wr.measureSubTypes[measureSubType].name + " / " + plotTypeText,
+                                    name: well.getName() + ": " + wic.wr.measureSubTypes[measureSubType].name + " / " + plotTypeText,
                                     yAxis: yAxisRefs[p - 1],
                                     marker: { symbol: this.getMarkerSymbol(measure), radius: 3 }
                                 });
@@ -142,7 +146,7 @@ var PlotController = (function () {
             }
             // create indicator curves
             var colors = ['000000', '333333', '666666'];
-            for (var p = 1; p <= this.wrc.plotSelector.plotsCount; p++) {
+            for (var p = 1; p <= this.wic.plotSelector.plotsCount; p++) {
                 var showMean = $('#show-mean-' + p).is(':checked');
                 var showStdError = $('#show-std-error-' + p).is(':checked');
                 var plotType = $('#plot-type-' + p).val();
@@ -247,7 +251,7 @@ var PlotController = (function () {
      */
     PlotController.prototype.updateColors = function (selectedWells) {
         for (var wellName in this.colorHash) {
-            if (this.colorHash.hasOwnProperty(wellName) && selectedWells.indexOf(wrc.wr.wellFromName(wellName)) == -1) {
+            if (this.colorHash.hasOwnProperty(wellName) && selectedWells.indexOf(wic.wr.wellFromName(wellName)) == -1) {
                 console.log('delete ' + wellName);
                 delete this.colorHash[wellName];
             }
@@ -303,9 +307,9 @@ var PlotController = (function () {
      * Display plots in Plots tab
      */
     PlotController.prototype.showView = function () {
-        this.wrc.tabController.showTab(TabController.PLOTS_TAB);
-        this.wrc.plotSelector.setMode(PlotSelector.PLOT_DISPLAY_MODE);
-        this.wrc.plotSelector.setMeasureType(Measure.ABS_TYPE);
+        this.wic.tabController.showTab(TabController.PLOTS_TAB);
+        this.wic.plotSelector.setMode(PlotSelector.PLOT_DISPLAY_MODE);
+        this.wic.plotSelector.setMeasureType(Measure.ABS_TYPE);
         this.usedColors = [];
         this.colorHash = [];
         var that = this;

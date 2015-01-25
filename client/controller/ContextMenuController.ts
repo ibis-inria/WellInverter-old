@@ -1,4 +1,4 @@
-///<reference path="WellReaderController.ts" />
+///<reference path="WellInverterController.ts" />
 ///<reference path="UploadExperimentController.ts" />
 
 /**
@@ -12,9 +12,9 @@ class ContextMenuController {
     contextMenu: any[] = [];
 
     /**
-     * WellReaderController associated with me
+     * WellInverterController associated with me
      */
-    wrc: WellReaderController;
+    wic: WellInverterController;
 
     /**
      * id of the div containing the context menu
@@ -24,8 +24,8 @@ class ContextMenuController {
     /**
      * Constructor
      */
-    constructor(wrc: WellReaderController, contextMenuContainerId: string) {
-        this.wrc = wrc;
+    constructor(wic: WellInverterController, contextMenuContainerId: string) {
+        this.wic = wic;
         this.contextMenuContainerId = contextMenuContainerId;
 
         // method clear on menus: remove every options
@@ -45,24 +45,24 @@ class ContextMenuController {
         for (var i = 0; i <= TreeController.RLU_PLOTS_NODE; i++)
             this.contextMenu[i] = [];
         this.contextMenu[TreeController.EXPERIMENTS_NODE] = [
-           /* {text: 'Upload a WellReader XML experiment file', onclick: function(){new UploadExperimentController(wrc, "upload-xml-experiment.html", "Upload WellReader experiment").open();}, iconCls:'icon-reload'},
-            {text: 'Upload a Fusion CSV experiment file', onclick: function(){new UploadExperimentController(wrc, "upload-csv-fusion.html", "Upload Fusion experiment").open();}, iconCls:'icon-reload'},*/
-            {text: 'Upload a Well Reader (JSON) experiment file', onclick: function(){new UploadExperimentController(wrc, "upload-json.html", "Upload JSON experiment file").open();}, iconCls:'icon-reload'},
-            {text: 'Upload a Tecan Excel (XLSX) experiment file', onclick: function(){new UploadExperimentController(wrc, "upload-xlsx-tecan.html", "Upload Tecan experiment").open();}, iconCls:'icon-reload'}
+           /* {text: 'Upload a WellInverter XML experiment file', onclick: function(){new UploadExperimentController(wic, "upload-xml-experiment.html", "Upload WellInverter experiment").open();}, iconCls:'icon-reload'},
+            {text: 'Upload a Fusion CSV experiment file', onclick: function(){new UploadExperimentController(wic, "upload-csv-fusion.html", "Upload Fusion experiment").open();}, iconCls:'icon-reload'},*/
+            {text: 'Upload a WellInverter (JSON) experiment file', onclick: function(){new UploadExperimentController(wic, "upload-json.html", "Upload JSON experiment file").open();}, iconCls:'icon-reload'},
+            {text: 'Upload a Tecan Excel (XLSX) data file', onclick: function(){new UploadExperimentController(wic, "upload-xlsx-tecan.html", "Upload Tecan experiment").open();}, iconCls:'icon-reload'}
         ];
         this.contextMenu[TreeController.EXPERIMENT_NODE] = [
-            {text: 'Download Well Reader (JSON) experiment file', onclick: function(){wrc.treeController.downloadExperiment();}, iconCls:'icon-save'},
-            {text: 'Export computed data', onclick: function(){wrc.treeController.exportCurves();}, iconCls:'icon-redo'},
-            {text: 'Rename experiment', onclick: function(){wrc.treeController.renameNode();}, iconCls:'icon-sum'},
-            {text: 'Delete experiment', onclick: function(){wrc.treeController.deleteExperiment();}, iconCls:'icon-no'}
+            {text: 'Download a WellInverter (JSON) experiment file', onclick: function(){wic.treeController.downloadExperiment();}, iconCls:'icon-save'},
+            {text: 'Export data and analysis results', onclick: function(){wic.treeController.exportCurves();}, iconCls:'icon-redo'},
+            {text: 'Rename experiment', onclick: function(){wic.treeController.renameNode();}, iconCls:'icon-sum'},
+            {text: 'Delete experiment', onclick: function(){wic.treeController.deleteExperiment();}, iconCls:'icon-no'}
         ];
         this.contextMenu[TreeController.WELL_SETS_NODE] = [
-            {text: 'New WellSet', onclick: function(){wrc.treeController.appendWellSet();}, iconCls:'icon-add'}
+            {text: 'New WellSet', onclick: function(){wic.treeController.appendWellSet();}, iconCls:'icon-add'}
         ];
         this.contextMenu[TreeController.WELL_SET_NODE] = [
-            {text: 'Modify well set', onclick: function(){wrc.treeController.modifyWellSet();}, iconCls:'icon-edit'},
-            {text: 'Rename well set', onclick: function(){wrc.treeController.renameNode();}, iconCls:'icon-sum'},
-            {text: 'Delete well set', onclick: function(){wrc.treeController.deleteWellSet();}, iconCls:'icon-no'}
+            {text: 'Modify well set', onclick: function(){wic.treeController.modifyWellSet();}, iconCls:'icon-edit'},
+            {text: 'Rename well set', onclick: function(){wic.treeController.renameNode();}, iconCls:'icon-sum'},
+            {text: 'Delete well set', onclick: function(){wic.treeController.deleteWellSet();}, iconCls:'icon-no'}
         ];
     }
 
@@ -78,7 +78,7 @@ class ContextMenuController {
      * Return true iff built menu contains at least one option.
      */
     buildMenu(node): boolean {
-       var options = this.contextMenu[this.wrc.treeController.nodeType(node)];
+       var options = this.contextMenu[this.wic.treeController.nodeType(node)];
        this.jqContextMenu().menu('clear');
        options.forEach(function(o) {
                this.jqContextMenu().menu('appendItem', o);
@@ -93,7 +93,7 @@ class ContextMenuController {
      */
     show(e, node): void {
         e.preventDefault();
-        this.wrc.treeController.selectNode(node);
+        this.wic.treeController.selectNode(node);
         if ( this.buildMenu(node) )
             this.jqContextMenu().menu('show', {left: e.pageX, top: e.pageY});
     }

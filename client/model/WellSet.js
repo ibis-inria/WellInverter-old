@@ -1,20 +1,20 @@
-///<reference path="../controller/WellReaderController.ts" />
+///<reference path="../controller/WellInverterController.ts" />
 ///<reference path="../model/Well.ts" />
 var WellSet = (function () {
     /**
      * Constructor
      */
-    function WellSet(wrc, name) {
+    function WellSet(wic, name) {
         /**
          * Set of wells
          */
         this.wells = [];
-        this.wrc = wrc;
+        this.wic = wic;
         if (name == null || name == "")
             throw new Error("Unable to create a wellSet with empty name");
-        if (this.wrc.wr.existsWellSet(name))
+        if (this.wic.wr.existsWellSet(name))
             throw new Error("Unable to create a wellSet with  name " + name + ": name already in use");
-        this.wrc.wr.wellSets.push(this);
+        this.wic.wr.wellSets.push(this);
         this.setName(null, name);
     }
     /**
@@ -24,11 +24,11 @@ var WellSet = (function () {
         if (name == null || name == "")
             throw new Error("Unable to create a wellSet with empty name");
         if (oldName != name) {
-            if (this.wrc.wr.existsWellSet(name))
+            if (this.wic.wr.existsWellSet(name))
                 throw new Error("Unable to create a wellSet with  name " + name + ": name already in use");
-            this.wrc.wr.wellSetDictionary[name] = this;
+            this.wic.wr.wellSetDictionary[name] = this;
             if (oldName != null)
-                this.wrc.wr.wellSetDictionary[oldName] = null;
+                this.wic.wr.wellSetDictionary[oldName] = null;
             this.name = name;
         }
     };

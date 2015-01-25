@@ -1,6 +1,6 @@
 ///<reference path="../jquery.d.ts" />
 ///<reference path="../kineticjs.d.ts" />
-///<reference path="WellReaderController.ts" />
+///<reference path="WellInverterController.ts" />
 
 class BackgroundDefinitionController {
 
@@ -17,8 +17,8 @@ class BackgroundDefinitionController {
 
     public delta = 6;
 
-    // WellReader associated with me
-    public wrc: WellReaderController;
+    // WellInverter associated with me
+    public wic: WellInverterController;
 
 
 
@@ -40,8 +40,8 @@ class BackgroundDefinitionController {
     public selectedBackGroundWell: Well;
 
 
-    constructor(wrc: WellReaderController, measureSubType: number, canvasContainerId: string) {
-        this.wrc = wrc;
+    constructor(wic: WellInverterController, measureSubType: number, canvasContainerId: string) {
+        this.wic = wic;
         this.canvasContainerId = canvasContainerId;
         this.measureSubType = measureSubType;
 

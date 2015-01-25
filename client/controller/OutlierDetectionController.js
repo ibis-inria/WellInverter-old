@@ -1,5 +1,5 @@
 ///<reference path="../highcharts.d.ts" />
-///<reference path="WellReaderController.ts" />
+///<reference path="WellInverterController.ts" />
 ///<reference path="PlotSelector.ts" />
 ///<reference path="../file-saver.d.ts" />
 // Global variables used to patch Highcharts behavior: if mouseup click point <> mousedown click point,
@@ -12,17 +12,17 @@ var mouseX, mouseY, trueClick;
 var OutlierDetectionController = (function () {
     /**
      * Constructor
-     * @param wrc WellReaderController associated with me
+     * @param wic WellInverterController associated with me
      */
-    function OutlierDetectionController(wrc) {
-        this.wrc = wrc;
+    function OutlierDetectionController(wic) {
+        this.wic = wic;
     }
     /**
      * Update plot showing outliers
      */
     OutlierDetectionController.prototype.updatePlots = function () {
-        var selectedWell = this.wrc.plotSelector.selectedWell;
-        this.measureSubType = this.wrc.plotSelector.measureSubType;
+        var selectedWell = this.wic.plotSelector.selectedWell;
+        this.measureSubType = this.wic.plotSelector.measureSubType;
         this.well = selectedWell;
         if (selectedWell != null && selectedWell.hasMeasure(this.measureSubType)) {
             var measure = selectedWell.getMeasure(this.measureSubType);
@@ -87,8 +87,12 @@ var OutlierDetectionController = (function () {
                 },
                 credits: { enabled: false },
                 legend: { enabled: false },
-                xAxis: { title: { text: "time (min)" } },
-                yAxis: { min: 0, max: maxValue, title: { text: wrc.wr.measureSubTypes[this.measureSubType].name }, labels: { formatter: function () {
+                xAxis: { title: { text: "Time (min)" }, labels: {
+                    formatter: function () {
+                        return Highcharts.numberFormat(this.value, 0, '', ''); // Remove thousands separator
+                    }
+                } },
+                yAxis: { min: 0, max: maxValue, title: { text: wic.wr.measureSubTypes[this.measureSubType].name }, labels: { formatter: function () {
                     return this.value;
                 } } },
                 tooltip: { enabled: false },
@@ -125,7 +129,7 @@ var OutlierDetectionController = (function () {
                     }
                 },
                 scrollbar: { enabled: true },
-                title: { text: this.well.getName() + " / " + wrc.wr.measureSubTypes[this.measureSubType].name },
+                title: { text: this.well.getName() + " / " + wic.wr.measureSubTypes[this.measureSubType].name },
                 series: [
                     { data: chartData, allowPointSelect: !outliersGuide, enableMouseTracking: !outliersGuide, lineWidth: 0, zIndex: 1 },
                     { data: measure.trueCurveMarks.slice(), lineWidth: 4, marker: { radius: 8 }, draggableX: true, draggableY: true, allowPointSelect: true, zIndex: 2 },
@@ -214,8 +218,8 @@ var OutlierDetectionController = (function () {
         for (var i = 0; i < measure.time.length; i++) {
             measure.outlier[i] = 0;
         }
-        this.wrc.wr.resetComputedData();
-        this.wrc.experimentController.saveExperiment();
+        this.wic.wr.resetComputedData();
+        this.wic.experimentController.saveExperiment();
         this.updatePlots();
     };
     /**
@@ -223,7 +227,7 @@ var OutlierDetectionController = (function () {
      */
     OutlierDetectionController.prototype.detectOutliers = function () {
         var measure = this.well.getMeasure(this.measureSubType);
-        var measureSubTypePrefix = wrc.wr.measureSubTypes[this.measureSubType].name;
+        var measureSubTypePrefix = wic.wr.measureSubTypes[this.measureSubType].name;
         if (measure.time.length > 0) {
             this.refreshTrueCurve(measure);
             var validTime = [];
@@ -237,11 +241,11 @@ var OutlierDetectionController = (function () {
             var jsonParams = { 'times_curve': validTime, 'values_curve': validSignal };
             var outliersParams = ['percentile_above', 'percentile_below', 'niter_above', 'niter_below', 'goal_above', 'goal_below', 'smoothing_win', 'nstd'];
             outliersParams.forEach(function (p) {
-                jsonParams[p] = wrc.experimentParametersController.getParameterValue(measureSubTypePrefix + "_" + p);
+                jsonParams[p] = wic.experimentParametersController.getParameterValue(measureSubTypePrefix + "_" + p);
             });
             // run wellfare/outliers
             $.ajax({
-                url: "http://" + window.location.host + ":" + wrc.config.wellfarePort + "/wellfare/outliers",
+                url: "http://" + window.location.host + ":" + wic.config.wellfarePort + "/wellfare/outliers",
                 type: 'POST',
                 dataType: 'json',
                 contentType: 'application/json',
@@ -252,9 +256,9 @@ var OutlierDetectionController = (function () {
                         var index = data.times_cleaned_curve.indexOf(measure.time[i]);
                         measure.outlier[i] = (index == -1 ? 1 : 0);
                     }
-                    wrc.outlierDetectionController.updatePlots();
-                    wrc.wr.resetComputedData();
-                    wrc.experimentController.saveExperiment();
+                    wic.outlierDetectionController.updatePlots();
+                    wic.wr.resetComputedData();
+                    wic.experimentController.saveExperiment();
                 },
                 error: function () {
                     alert("Cannot get data from Wellfare");
@@ -268,7 +272,7 @@ var OutlierDetectionController = (function () {
      */
     OutlierDetectionController.prototype.filterOutliers = function () {
         var measure = this.well.getMeasure(this.measureSubType);
-        var measureSubTypePrefix = wrc.wr.measureSubTypes[this.measureSubType].name;
+        var measureSubTypePrefix = wic.wr.measureSubTypes[this.measureSubType].name;
         measure.outliersFilteringParameter = +($("#filter").val()); // +: forces conversion to numeric type
         if (measure.time.length > 0) {
             this.refreshTrueCurve(measure);
@@ -282,9 +286,9 @@ var OutlierDetectionController = (function () {
                         mark++;
                         if (mark >= measure.trueCurveMarks.length) {
                             //$('#hide-outliers-checkbox').prop('checked', true);
-                            wrc.outlierDetectionController.updatePlots();
+                            wic.outlierDetectionController.updatePlots();
                             measure.resetComputedData();
-                            wrc.experimentController.saveExperiment();
+                            wic.experimentController.saveExperiment();
                             return;
                         }
                     }
@@ -300,8 +304,8 @@ var OutlierDetectionController = (function () {
             }
         }
         measure.resetComputedData();
-        wrc.outlierDetectionController.updatePlots();
-        wrc.experimentController.saveExperiment();
+        wic.outlierDetectionController.updatePlots();
+        wic.experimentController.saveExperiment();
     };
     /**
      * Export outliers-free curve as CSV file
@@ -317,15 +321,15 @@ var OutlierDetectionController = (function () {
             }
         }
         var blob = new Blob([(times + "\n" + values).replace(/\./g, ",")], { type: "text/csv;charset=utf-8" });
-        saveAs(blob, measure.well.getName() + "-" + wrc.wr.measureSubTypes[this.measureSubType].name + ".csv");
+        saveAs(blob, measure.well.getName() + "-" + wic.wr.measureSubTypes[this.measureSubType].name + ".csv");
     };
     /**
      * Display Outlier detection tab
      */
     OutlierDetectionController.prototype.showView = function (measureSubType) {
-        this.wrc.tabController.showTab(TabController.OUTLIER_DETECTION_TAB);
-        this.wrc.plotSelector.setMeasureType(measureSubType);
-        this.wrc.plotSelector.setMode(PlotSelector.OUTLIER_DETECTION_MODE);
+        this.wic.tabController.showTab(TabController.OUTLIER_DETECTION_TAB);
+        this.wic.plotSelector.setMeasureType(measureSubType);
+        this.wic.plotSelector.setMode(PlotSelector.OUTLIER_DETECTION_MODE);
         var that = this;
         $("#outlier-detection").livequery(function () {
             that.updatePlots();

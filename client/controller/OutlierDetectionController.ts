@@ -1,5 +1,5 @@
 ///<reference path="../highcharts.d.ts" />
-///<reference path="WellReaderController.ts" />
+///<reference path="WellInverterController.ts" />
 ///<reference path="PlotSelector.ts" />
 ///<reference path="../file-saver.d.ts" />
 
@@ -16,9 +16,9 @@ var mouseX, mouseY, trueClick;
 class OutlierDetectionController {
 
     /**
-     * WellReaderController associated with me
+     * WellInverterController associated with me
      */
-    public wrc: WellReaderController;
+    public wic: WellInverterController;
 
     /**
      * Concerned well
@@ -32,19 +32,19 @@ class OutlierDetectionController {
 
     /**
      * Constructor
-     * @param wrc WellReaderController associated with me
+     * @param wic WellInverterController associated with me
      */
-    constructor(wrc: WellReaderController) {
-        this.wrc = wrc;
+    constructor(wic: WellInverterController) {
+        this.wic = wic;
     }
 
     /**
      * Update plot showing outliers
      */
     updatePlots(): void {
-        var selectedWell  = this.wrc.plotSelector.selectedWell;
+        var selectedWell  = this.wic.plotSelector.selectedWell;
 
-        this.measureSubType = this.wrc.plotSelector.measureSubType;
+        this.measureSubType = this.wic.plotSelector.measureSubType;
         this.well = selectedWell;
 
         if ( selectedWell != null && selectedWell.hasMeasure(this.measureSubType) ) {
@@ -117,8 +117,14 @@ class OutlierDetectionController {
                 },
                 credits: { enabled: false },
                 legend: { enabled: false },
-                xAxis: { title: { text: "time (min)" } },
-                yAxis: { min: 0, max: maxValue, title: { text: wrc.wr.measureSubTypes[this.measureSubType].name },
+                xAxis: { title: { text: "Time (min)" },
+                    labels: {
+                        formatter: function () {
+                            return Highcharts.numberFormat(this.value, 0, '', ''); // Remove thousands separator
+                        }
+                    }
+                },
+                yAxis: { min: 0, max: maxValue, title: { text: wic.wr.measureSubTypes[this.measureSubType].name },
                     labels: {formatter: function(){return this.value}}},
                 tooltip: { enabled: false },
                 plotOptions: {
@@ -154,7 +160,7 @@ class OutlierDetectionController {
                     }
                 },
                 scrollbar: { enabled: true },
-                title: { text: this.well.getName() + " / " + wrc.wr.measureSubTypes[this.measureSubType].name },
+                title: { text: this.well.getName() + " / " + wic.wr.measureSubTypes[this.measureSubType].name },
                 series: [
                     {data: chartData, allowPointSelect: ! outliersGuide, enableMouseTracking: ! outliersGuide, lineWidth: 0, zIndex: 1},
                     {data: measure.trueCurveMarks.slice(), lineWidth: 4, marker: {radius: 8}, draggableX: true, draggableY: true, allowPointSelect: true, zIndex: 2},
@@ -261,8 +267,8 @@ class OutlierDetectionController {
             measure.outlier[i] = 0;
         }
 
-        this.wrc.wr.resetComputedData();
-        this.wrc.experimentController.saveExperiment();
+        this.wic.wr.resetComputedData();
+        this.wic.experimentController.saveExperiment();
         this.updatePlots();
     }
 
@@ -271,7 +277,7 @@ class OutlierDetectionController {
      */
     detectOutliers() {
         var measure = this.well.getMeasure(this.measureSubType);
-        var measureSubTypePrefix = wrc.wr.measureSubTypes[this.measureSubType].name;
+        var measureSubTypePrefix = wic.wr.measureSubTypes[this.measureSubType].name;
         if ( measure.time.length > 0 ) {
             this.refreshTrueCurve(measure);
 
@@ -290,13 +296,13 @@ class OutlierDetectionController {
 
             outliersParams.forEach(
                 function(p){
-                    jsonParams[p] = wrc.experimentParametersController.getParameterValue(measureSubTypePrefix + "_" + p);
+                    jsonParams[p] = wic.experimentParametersController.getParameterValue(measureSubTypePrefix + "_" + p);
                 }
             );
 
             // run wellfare/outliers
             $.ajax({
-                url: "http://" + window.location.host + ":" + wrc.config.wellfarePort + "/wellfare/outliers",
+                url: "http://" + window.location.host + ":" + wic.config.wellfarePort + "/wellfare/outliers",
                 type: 'POST',
                 dataType: 'json',
                 contentType: 'application/json',
@@ -308,10 +314,10 @@ class OutlierDetectionController {
                         measure.outlier[i] = ( index == -1 ? 1 : 0 );
                     }
 
-                    wrc.outlierDetectionController.updatePlots();
+                    wic.outlierDetectionController.updatePlots();
 
-                    wrc.wr.resetComputedData();
-                    wrc.experimentController.saveExperiment();
+                    wic.wr.resetComputedData();
+                    wic.experimentController.saveExperiment();
                 },
                 error: function(){
                     alert("Cannot get data from Wellfare");
@@ -327,7 +333,7 @@ class OutlierDetectionController {
 
     filterOutliers(): void {
         var measure = this.well.getMeasure(this.measureSubType);
-        var measureSubTypePrefix = wrc.wr.measureSubTypes[this.measureSubType].name;
+        var measureSubTypePrefix = wic.wr.measureSubTypes[this.measureSubType].name;
 
         measure.outliersFilteringParameter = +($("#filter").val());  // +: forces conversion to numeric type
 
@@ -344,9 +350,9 @@ class OutlierDetectionController {
                         mark++;
                         if (mark >= measure.trueCurveMarks.length) {
                             //$('#hide-outliers-checkbox').prop('checked', true);
-                            wrc.outlierDetectionController.updatePlots();
+                            wic.outlierDetectionController.updatePlots();
                             measure.resetComputedData();
-                            wrc.experimentController.saveExperiment();
+                            wic.experimentController.saveExperiment();
                             return;
                         }
                     }
@@ -363,8 +369,8 @@ class OutlierDetectionController {
             }
         }
         measure.resetComputedData();
-        wrc.outlierDetectionController.updatePlots();
-        wrc.experimentController.saveExperiment();
+        wic.outlierDetectionController.updatePlots();
+        wic.experimentController.saveExperiment();
     }
 
 
@@ -382,7 +388,7 @@ class OutlierDetectionController {
             }
         }
         var blob = new Blob([(times + "\n" + values).replace(/\./g, ",")], {type: "text/csv;charset=utf-8"});
-        saveAs(blob, measure.well.getName() + "-" + wrc.wr.measureSubTypes[this.measureSubType].name + ".csv");
+        saveAs(blob, measure.well.getName() + "-" + wic.wr.measureSubTypes[this.measureSubType].name + ".csv");
     }
 
 
@@ -390,9 +396,9 @@ class OutlierDetectionController {
      * Display Outlier detection tab
      */
     showView(measureSubType: number): void {
-        this.wrc.tabController.showTab(TabController.OUTLIER_DETECTION_TAB);
-        this.wrc.plotSelector.setMeasureType(measureSubType);
-        this.wrc.plotSelector.setMode(PlotSelector.OUTLIER_DETECTION_MODE);
+        this.wic.tabController.showTab(TabController.OUTLIER_DETECTION_TAB);
+        this.wic.plotSelector.setMeasureType(measureSubType);
+        this.wic.plotSelector.setMode(PlotSelector.OUTLIER_DETECTION_MODE);
         var that = this;
         $("#outlier-detection").livequery(function() {    // livequery() waits for view complete loading
             that.updatePlots();

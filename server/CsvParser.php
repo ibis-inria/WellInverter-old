@@ -84,12 +84,24 @@ abstract class CsvParser {
         $this->wr["measureSubTypes"] = array();
         for ($w = 0; $w <= 95; $w++) {
             $this->wr["wells"][$w] = array("id" => $w);
-            $this->wr["wells"][$w]["measures"] = null;
+			$this->wr["wells"][$w]["name"] = $this->wellName($w);
+            $this->wr["wells"][$w]["measures"] = array(
+				array("type" => 0, "subType" => 0),
+				array("type" => 1, "subType" => 1),
+				array("type" => 2, "subType" => 2));
+
         }
 
 		if ( ($this->inputHandle = fopen($inputPath, "r")) === FALSE )
 			throw new Exception("Error : file not found or not accessible for reading : " . $inputPath);
 		$this->insideSection = self::NONE;
+	}
+
+	/**
+	 * Name: 0 -> A1, 11 -> A12, 12-> B1, ...
+	 */
+	function wellName($wellIndex) {
+		return chr(65 + floor($wellIndex / 12)) . ($wellIndex % 12 + 1);
 	}
 
     /**

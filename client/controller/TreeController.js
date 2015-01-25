@@ -1,5 +1,5 @@
 ///<reference path="../jquery.d.ts" />
-///<reference path="WellReaderController.ts" />
+///<reference path="WellInverterController.ts" />
 ///<reference path="WellSetController.ts" />
 ///<reference path='ExperimentController.ts'/>
 ///<reference path='ExperimentInfoController.ts'/>
@@ -14,10 +14,10 @@ var TreeController = (function () {
     /**
      * Constructor
      */
-    function TreeController(wrc, treeContainerId) {
-        this.wrc = wrc;
+    function TreeController(wic, treeContainerId) {
+        this.wic = wic;
         this.treeContainerId = treeContainerId;
-        this.contextMenuController = new ContextMenuController(this.wrc, 'context-menu');
+        this.contextMenuController = new ContextMenuController(this.wic, 'context-menu');
     }
     /**
      * JQuery selector for the tree
@@ -43,7 +43,7 @@ var TreeController = (function () {
                 tc.getSelectedNode().attributes.onclick.call(null);
             },
             onAfterEdit: function () {
-                wrc.treeController.updateNodeName();
+                wic.treeController.updateNodeName();
             },
             onExpand: function (node) {
                 if (tc.nodeType(node) == TreeController.EXPERIMENT_NODE) {
@@ -65,7 +65,7 @@ var TreeController = (function () {
             return null;
     };
     /**
-     *  WellReader object associated to the node
+     *  WellInverter object associated to the node
      */
     TreeController.prototype.nodeObject = function (node) {
         if (node != null && node.hasOwnProperty("attributes"))
@@ -148,10 +148,10 @@ var TreeController = (function () {
         var node = this.getSelectedNode();
         var type = this.nodeType(node);
         if (type == TreeController.EXPERIMENT_NODE)
-            wrc.experimentController.renameExperiment(this.oldName, node.text);
+            wic.experimentController.renameExperiment(this.oldName, node.text);
         else if (type == TreeController.WELL_SET_NODE) {
             this.nodeObject(node).setName(this.oldName, node.text);
-            this.wrc.plotSelector.refreshWellSets();
+            this.wic.plotSelector.refreshWellSets();
         }
     };
     // ---------------------------------------------------------------------------------------------
@@ -160,84 +160,84 @@ var TreeController = (function () {
      * Tree constructor
      */
     TreeController.prototype.tree = function () {
-        var experiments = this.wrc.experiments.map(function (e) {
+        var experiments = this.wic.experiments.map(function (e) {
             return {
                 "id": TreeController.nodeCounter++,
                 "text": e,
                 "state": "closed",
                 "attributes": { "object": e, "type": TreeController.EXPERIMENT_NODE, "iconCls": "icon-experiment", "onclick": function () {
-                    wrc.treeController.selectExperiment(e);
+                    wic.treeController.selectExperiment(e);
                 } },
                 "children": [
                     { "id": TreeController.nodeCounter++, "text": "Info", "iconCls": "icon-info", "attributes": { "object": null, "type": TreeController.EXPERIMENT_INFO_NODE, "onclick": function () {
-                        new ExperimentInfoController(wrc, "experiment-info").showView();
+                        new ExperimentInfoController(wic, "experiment-info").showView();
                     } } },
                     { "id": TreeController.nodeCounter++, "text": "Parameters", "iconCls": "icon-settings", "attributes": { "object": null, "type": TreeController.GLOBAL_PARAMETERS_NODE, "onclick": function () {
-                        wrc.experimentParametersController = new ExperimentParametersController(wrc);
-                        wrc.experimentParametersController.showView();
+                        wic.experimentParametersController = new ExperimentParametersController(wic);
+                        wic.experimentParametersController.showView();
                     } } },
                     { "id": TreeController.nodeCounter++, "text": "Background", "iconCls": "icon-background", "attributes": { "object": null, "type": TreeController.BACKGROUND_DEFINITION_NODE, "onclick": function () {
-                        wrc.treeController.expandNode();
+                        wic.treeController.expandNode();
                     } } },
                     { "id": TreeController.nodeCounter++, "text": "Outliers", "iconCls": "icon-outliers", "attributes": { "object": null, "type": TreeController.OUTLIER_DETECTION_NODE, "onclick": function () {
-                        console.log(wrc.treeController.getSelectedNode()); /*wrc.treeController.expandNode();*/
+                        console.log(wic.treeController.getSelectedNode()); /*wic.treeController.expandNode();*/
                     } } },
                     { "id": TreeController.nodeCounter++, "text": "Plots", "iconCls": "icon-plot", "attributes": { "object": null, "type": TreeController.PLOTS_NODE, "onclick": function () {
-                        this.wrc.plotController.showView();
+                        this.wic.plotController.showView();
                     } } }
                 ]
             };
         }, this);
         return [{ "id": 0, "text": "Experiments", "attributes": { "object": null, "type": TreeController.EXPERIMENTS_NODE, "onclick": function () {
-            wrc.treeController.expandNode();
+            wic.treeController.expandNode();
         } }, "children": experiments }];
     };
     // ---------------------------------------------------------------------------------------------
-    // WellReader operations associated with tree node click handling
+    // WellInverter operations associated with tree node click handling
     /**
      * Select and open experiment expName in the tree
      */
     TreeController.prototype.selectExperiment = function (expName) {
-        if (this.wrc.experimentController.experimentName != expName) {
+        if (this.wic.experimentController.experimentName != expName) {
             var rootNode = this.getRootNode();
             var nodes = this.getChildrenNodes(rootNode);
             for (var c = 0; c < nodes.length; c++) {
-                if (this.wrc.experimentController.experimentName == nodes[c].text) {
+                if (this.wic.experimentController.experimentName == nodes[c].text) {
                     this.collapseNode(nodes[c]);
                     break;
                 }
             }
-            this.wrc.experimentController.loadExperiment(expName);
+            this.wic.experimentController.loadExperiment(expName);
         }
     };
     /**
      * Delete selected experiment
      */
     TreeController.prototype.deleteExperiment = function () {
-        wrc.experimentController.deleteExperiment(this.getSelectedNode().text);
+        wic.experimentController.deleteExperiment(this.getSelectedNode().text);
         this.removeNode();
     };
     /**
      * Download selected experiment
      */
     TreeController.prototype.downloadExperiment = function () {
-        new ExperimentController(this.wrc).downloadExperiment(this.getSelectedNode().text);
+        new ExperimentController(this.wic).downloadExperiment(this.getSelectedNode().text);
     };
     /**
      * Export a zip file containing computed data
      */
     TreeController.prototype.exportCurves = function () {
-        wrc.experimentController.exportCurves();
+        wic.experimentController.exportCurves();
     };
     /**
      * Create a new WellSet
      */
     TreeController.prototype.appendWellSet = function () {
-        this.oldName = this.wrc.wr.generateUniqueName("wellSet", "New wellSet");
-        var ws = new WellSet(this.wrc, this.oldName);
+        this.oldName = this.wic.wr.generateUniqueName("wellSet", "New wellSet");
+        var ws = new WellSet(this.wic, this.oldName);
         var node = this.getSelectedNode();
         this.appendNode(node.target, this.oldName, ws, TreeController.WELL_SET_NODE, function () {
-            wrc.treeController.modifyWellSet();
+            wic.treeController.modifyWellSet();
         });
         var newNode = this.findNode(TreeController.nodeCounter - 1);
         this.selectNode(newNode); // otherwise parent node remains selected
@@ -249,8 +249,8 @@ var TreeController = (function () {
     TreeController.prototype.modifyWellSet = function () {
         var node = this.getSelectedNode();
         var ws = this.nodeObject(node);
-        wrc.wellSetController = new WellSetController(wrc, "well-set-microplate", ws);
-        wrc.wellSetController.showView();
+        wic.wellSetController = new WellSetController(wic, "well-set-microplate", ws);
+        wic.wellSetController.showView();
     };
     /**
      * Delete selected WellSet
@@ -258,9 +258,9 @@ var TreeController = (function () {
     TreeController.prototype.deleteWellSet = function () {
         var node = this.getSelectedNode();
         var ws = this.nodeObject(node);
-        this.wrc.wr.removeWellSet(ws);
+        this.wic.wr.removeWellSet(ws);
         this.removeNode();
-        wrc.wellSetController.closeView();
+        wic.wellSetController.closeView();
     };
     // Node types
     TreeController.EXPERIMENTS_NODE = 0;

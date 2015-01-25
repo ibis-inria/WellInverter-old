@@ -1,4 +1,4 @@
-///<reference path="WellReaderController.ts" />
+///<reference path="WellInverterController.ts" />
 ///<reference path="WindowController.ts" />
 ///<reference path="../model/Session.ts" />
 var __extends = this.__extends || function (d, b) {
@@ -15,8 +15,8 @@ var AuthenticationController = (function (_super) {
     /**
      * Constructor
      */
-    function AuthenticationController(wrc) {
-        _super.call(this, wrc, "authentication.html");
+    function AuthenticationController(wic) {
+        _super.call(this, wic, "authentication.html");
     }
     /**
      * Return whether current user is authenticated.
@@ -38,7 +38,7 @@ var AuthenticationController = (function (_super) {
         var passwordTxt = $('#password');
         if (this.isValidIdentity(loginTxt.val(), passwordTxt.val())) {
             this.close();
-            this.wrc.init();
+            this.wic.init();
         }
         else {
             $('#auth-failure').html("Error: incorrect login and/or password");
@@ -53,7 +53,7 @@ var AuthenticationController = (function (_super) {
      * Return true iff (login, password) is valid. Side effect: set session variable
      */
     AuthenticationController.prototype.isValidIdentity = function (login, password) {
-        if ((login == "hdj" && password == "hdj") || (login == "mp" && password == "mp") || (login == "cb" && password == "cb") || (login == "vz" && password == "vz")) {
+        if ((login == "hdj" && password == "hdj") || (login == "mp" && password == "mp") || (login == "cb" && password == "cb") || (login == "vz" && password == "vz") || (login == "guest" && password == "guest2015")) {
             Session.setUserName(login);
             return true;
         }

@@ -1,25 +1,25 @@
 ///<reference path="../jquery.d.ts" />
-///<reference path="../model/WellReader.ts" />
-///<reference path="WellReaderController.ts" />
+///<reference path="../model/WellInverter.ts" />
+///<reference path="WellInverterController.ts" />
 var TabController = (function () {
     /**
      * Constructor
      */
-    function TabController(wrc, tabContainerId) {
+    function TabController(wic, tabContainerId) {
         /**
          * Object associated with the tab
          */
         this.object = null;
-        this.wrc = wrc;
+        this.wic = wic;
         this.tabContainerId = tabContainerId;
         var tc = this;
         this.jqTabs().tabs({
             onSelect: function (title) {
-                wrc.plotSelector.setVisibility("plot-selector", title == TabController.tabTitle[TabController.PLOTS_TAB] || title == TabController.tabTitle[TabController.OUTLIER_DETECTION_TAB]);
+                wic.plotSelector.setVisibility("plot-selector", title == TabController.tabTitle[TabController.PLOTS_TAB] || title == TabController.tabTitle[TabController.OUTLIER_DETECTION_TAB]);
             },
             onClose: function () {
                 if (tc.jqTabs().tabs('tabs').length == 0)
-                    wrc.plotSelector.setVisibility("plot-selector", false);
+                    wic.plotSelector.setVisibility("plot-selector", false);
             }
         });
     }
@@ -141,7 +141,7 @@ var TabController = (function () {
      */
     TabController.tabTitle = [
         "Experiment info.",
-        "Experimental parameters",
+        "Parameters",
         "Background definition",
         "Plots",
         "WellSet definition",

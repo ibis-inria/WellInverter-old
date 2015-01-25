@@ -1,8 +1,8 @@
 ///<reference path="../jquery.d.ts" />
-///<reference path="WellReaderController.ts" />
+///<reference path="WellInverterController.ts" />
 ///<reference path="BackgroundDefinitionController.ts" />
 
-declare var wrc: WellReaderController;
+declare var wic: WellInverterController;
 /**
  * Class controlling well sets. A WellSet is a names set of wells
  * Associated view is well-set-definition.html
@@ -20,8 +20,8 @@ class WellSetController extends BackgroundDefinitionController {
     /**
      * Constructor
      */
-    constructor(wrc: WellReaderController, canvasContainerId: string, wellSet: WellSet) {
-        super(wrc, null, canvasContainerId);
+    constructor(wic: WellInverterController, canvasContainerId: string, wellSet: WellSet) {
+        super(wic, null, canvasContainerId);
         this.wellSet = wellSet;
         this.selectionMode = BackgroundDefinitionController.WELLS_SELECTION_MODE;
 
@@ -40,14 +40,14 @@ class WellSetController extends BackgroundDefinitionController {
         for (var l = 0; l < 8; l++) {
             for (var c = 0; c < 12; c++)  {
                 if ( this.selected[l][c] ) {
-                    wells.push(this.wrc.wr.getWell(l*12+c));
+                    wells.push(this.wic.wr.getWell(l*12+c));
                 }
             }
         }
         this.wellSet.wells = wells;
 
-        this.wrc.tabController.closeSelectedTab();
-        this.wrc.plotSelector.refreshWellSets();
+        this.wic.tabController.closeSelectedTab();
+        this.wic.plotSelector.refreshWellSets();
     }
 
     /**
@@ -58,15 +58,15 @@ class WellSetController extends BackgroundDefinitionController {
         // because ID in HTML code need to be unique
         this.closeExistingMicroplateViews();
 
-        this.wrc.tabController.showTab(TabController.WELL_SET_DEFINITION_TAB, this.wellSet);
+        this.wic.tabController.showTab(TabController.WELL_SET_DEFINITION_TAB, this.wellSet);
 
         // init view
         $("#well-set-microplate").livequery(function(){ // livequery() waits for view complete loading
-            wrc.wellSetController.draw();
+            wic.wellSetController.draw();
             $('#well-set-tip').html(
                 "1. Select the wells in the wells set: click a well, a column name or a line name or draw rectangular selection.<br>" +
                 "2. Click the 'Define set' button.");
-            wrc.wellSetController.initMouseHandler();
+            wic.wellSetController.initMouseHandler();
         });
     }
 
@@ -74,11 +74,11 @@ class WellSetController extends BackgroundDefinitionController {
      * Close Well set definition tab
      */
     closeView(): void {
-        var tc = this.wrc.tabController;
+        var tc = this.wic.tabController;
         if ( tc.existsTab(TabController.WELL_SET_DEFINITION_TAB, this.wellSet) ) {
             tc.selectTab(TabController.WELL_SET_DEFINITION_TAB, this.wellSet);
             tc.closeSelectedTab();
         }
-        this.wrc.plotSelector.refreshWellSets();
+        this.wic.plotSelector.refreshWellSets();
     }
 }

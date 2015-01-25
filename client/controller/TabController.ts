@@ -1,6 +1,6 @@
 ///<reference path="../jquery.d.ts" />
-///<reference path="../model/WellReader.ts" />
-///<reference path="WellReaderController.ts" />
+///<reference path="../model/WellInverter.ts" />
+///<reference path="WellInverterController.ts" />
 
 class TabController {
 
@@ -19,7 +19,7 @@ class TabController {
      */
     static tabTitle = [
         "Experiment info.",
-        "Experimental parameters",
+        "Parameters",
         "Background definition",
         "Plots",
         "WellSet definition",
@@ -43,9 +43,9 @@ class TabController {
     ];
 
     /**
-     * WellReaderController associated with me
+     * WellInverterController associated with me
      */
-    wrc: WellReaderController;
+    wic: WellInverterController;
 
     /**
      * Object associated with the tab
@@ -61,16 +61,16 @@ class TabController {
     /**
      * Constructor
      */
-    constructor(wrc: WellReaderController, tabContainerId: string) {
-        this.wrc = wrc;
+    constructor(wic: WellInverterController, tabContainerId: string) {
+        this.wic = wic;
         this.tabContainerId = tabContainerId;
 
         var tc = this;
         this.jqTabs().tabs({
             onSelect: function(title) {
-                    wrc.plotSelector.setVisibility("plot-selector", title == TabController.tabTitle[TabController.PLOTS_TAB] || title == TabController.tabTitle[TabController.OUTLIER_DETECTION_TAB]);
+                    wic.plotSelector.setVisibility("plot-selector", title == TabController.tabTitle[TabController.PLOTS_TAB] || title == TabController.tabTitle[TabController.OUTLIER_DETECTION_TAB]);
                 },
-            onClose:  function() {if ( tc.jqTabs().tabs('tabs').length == 0 ) wrc.plotSelector.setVisibility("plot-selector", false);}
+            onClose:  function() {if ( tc.jqTabs().tabs('tabs').length == 0 ) wic.plotSelector.setVisibility("plot-selector", false);}
         });
     }
 

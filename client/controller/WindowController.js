@@ -1,5 +1,5 @@
 ///<reference path="../easyui.d.ts" />
-///<reference path="WellReaderController.ts" />
+///<reference path="WellInverterController.ts" />
 /**
  * Class controlling a JQuery easyUI window
  */
@@ -7,8 +7,8 @@ var WindowController = (function () {
     /**
      * Constructor
      */
-    function WindowController(wrc, url, content) {
-        this.wrc = wrc;
+    function WindowController(wic, url, content) {
+        this.wic = wic;
         this.windowId = "window";
         this.url = url;
         this.content = url;

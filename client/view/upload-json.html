@@ -1,13 +1,13 @@
 
 <div style="margin: 10px">
-   <h2>Upload a JSON Well reader file</h2>
-   <div id="fileuploader">Select JSON file to upload (.json)</div>
+   <h2>Upload a WellInverter file</h2>
+   <div id="fileuploader">Select WellInverter JSON file to upload</div>
    <div id="eventsmessage"></div>
 </div>
 <script>
    $(document).ready(function() {
       $("#fileuploader").uploadFile({
-         url:"../../server/WellReaderController.php",
+         url:"../../server/WellInverterController.php",
          allowedTypes:"json",
          acceptFiles: ".json",
          fileName:"file",

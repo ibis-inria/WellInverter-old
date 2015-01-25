@@ -1,4 +1,4 @@
-///<reference path="WellReaderController.ts" />
+///<reference path="WellInverterController.ts" />
 
 declare var $: JQueryStatic;
 
@@ -29,15 +29,15 @@ class ExperimentParametersController {
     };
 
     /**
-     * WellReaderController associated with me
+     * WellInverterController associated with me
      */
-    wrc: WellReaderController;
+    wic: WellInverterController;
 
     /**
      * Constructor
      */
-    constructor(wrc: WellReaderController) {
-        this.wrc = wrc;
+    constructor(wic: WellInverterController) {
+        this.wic = wic;
     }
 
     /**
@@ -51,22 +51,22 @@ class ExperimentParametersController {
         // check that there exist measure subtypes (not strictly required but likely to
         // indicate that this method is called before an experiment is loaded)
 
-        if ( this.wrc.wr.measureSubTypes.length == 0 ) {
+        if ( this.wic.wr.measureSubTypes.length == 0 ) {
             throw new Error("Invalid call to ExperimentParametersController.setParameters(): no measure sub-type is defined");
         }
 
-        if ( ! this.wrc.wr.experimentParameters.hasOwnProperty("max_shift") ) {
-            this.wrc.wr.experimentParameters["max_shift"] = 500;
+        if ( ! this.wic.wr.experimentParameters.hasOwnProperty("max_shift") ) {
+            this.wic.wr.experimentParameters["max_shift"] = 500;
         }
 
         // duplicate each param for each measure subtype
 
-        for (var i = 0; i < this.wrc.wr.measureSubTypes.length; i++) {
-            var mst = this.wrc.wr.measureSubTypes[i];
+        for (var i = 0; i < this.wic.wr.measureSubTypes.length; i++) {
+            var mst = this.wic.wr.measureSubTypes[i];
             for (var p = 0; p < this.subtypeParameters.length; p++) {
                 var key = mst.name + "_" + this.subtypeParameters[p];
-                if ( ! this.wrc.wr.experimentParameters.hasOwnProperty(key) ) {
-                    this.wrc.wr.experimentParameters[key] = this.defaultValues[this.subtypeParameters[p]][mst.type];
+                if ( ! this.wic.wr.experimentParameters.hasOwnProperty(key) ) {
+                    this.wic.wr.experimentParameters[key] = this.defaultValues[this.subtypeParameters[p]][mst.type];
                 }
             }
         }
@@ -90,8 +90,8 @@ class ExperimentParametersController {
 
         // populate form
 
-        for (var p in this.wrc.wr.experimentParameters) {
-            if (this.wrc.wr.experimentParameters.hasOwnProperty(p) )
+        for (var p in this.wic.wr.experimentParameters) {
+            if (this.wic.wr.experimentParameters.hasOwnProperty(p) )
                 $("#" + p).val(this.getParameterValue(p));
         }
     }
@@ -100,7 +100,7 @@ class ExperimentParametersController {
      * Return parameter value
      */
     getParameterValue(p: any): any {
-        return this.wrc.wr.experimentParameters[p];
+        return this.wic.wr.experimentParameters[p];
     }
 
     /**
@@ -110,23 +110,23 @@ class ExperimentParametersController {
 
         // store form data in the model
 
-        for (var p in this.wrc.wr.experimentParameters) {
-            if (this.wrc.wr.experimentParameters.hasOwnProperty(p))
-                this.wrc.wr.experimentParameters[p] = +($("#" + p).val());   // +: forces conversion to numeric type
+        for (var p in this.wic.wr.experimentParameters) {
+            if (this.wic.wr.experimentParameters.hasOwnProperty(p))
+                this.wic.wr.experimentParameters[p] = +($("#" + p).val());   // +: forces conversion to numeric type
         }
 
-        this.wrc.tabController.closeSelectedTab();
-        this.wrc.wr.resetComputedData();
-        this.wrc.experimentController.saveExperiment();
+        this.wic.tabController.closeSelectedTab();
+        this.wic.wr.resetComputedData();
+        this.wic.experimentController.saveExperiment();
     }
 
     /**
      * Show form in tab
      */
     showView(): void {
-        this.wrc.tabController.showTab(TabController.GLOBAL_PARAMETERS_TAB);
+        this.wic.tabController.showTab(TabController.GLOBAL_PARAMETERS_TAB);
         $("#experiment-parameters").livequery(function(){   // livequery() waits for view complete loading
-            wrc.experimentParametersController.initForm();
+            wic.experimentParametersController.initForm();
         });
     }
 
@@ -134,7 +134,7 @@ class ExperimentParametersController {
      * Run on "Cancel" button click
      */
     closeForm(): void {
-        this.wrc.tabController.closeSelectedTab();
+        this.wic.tabController.closeSelectedTab();
     }
 }
 

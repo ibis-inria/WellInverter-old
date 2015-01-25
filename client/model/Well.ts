@@ -1,4 +1,4 @@
-///<reference path="../model/WellReader.ts" />
+///<reference path="WellInverter.ts" />
 ///<reference path="../model/Measure.ts" />
 
 class Well {
@@ -62,7 +62,7 @@ class Well {
      */
      getBackgroundWell(measureSubType: number): Well {
         var m = this.getMeasure(measureSubType);
-        return ( m == null || m.backgroundReferenceWell == null || m.backgroundReferenceWell == -1 ? null : wrc.wr.getWell(m.backgroundReferenceWell) );
+        return ( m == null || m.backgroundReferenceWell == null || m.backgroundReferenceWell == -1 ? null : wic.wr.getWell(m.backgroundReferenceWell) );
     }
 
     /**
@@ -80,7 +80,7 @@ class Well {
         if ( prevBgWell != null ) { // check whether prevBgWell is still a background well
             for (var w = 0; w <= 95; w++) {
                 var foundWellWithBackgroundWellNumber = false;
-                if ( wrc.wr.getWell(w).getBackgroundWell(measureSubType) == prevBgWell && w != this.id ) {
+                if ( wic.wr.getWell(w).getBackgroundWell(measureSubType) == prevBgWell && w != this.id ) {
                     foundWellWithBackgroundWellNumber = true;
                     break;
                 }

@@ -1,5 +1,5 @@
 ///<reference path="../jquery.d.ts" />
-///<reference path="WellReaderController.ts" />
+///<reference path="WellInverterController.ts" />
 ///<reference path="../Handlebars.ts" />
 /**
  * Microplate representation and various form elements allowing one to choose wells and parameters for plotting
@@ -7,9 +7,9 @@
 var PlotSelector = (function () {
     /**
      * Constructor
-     * @param wrc
+     * @param wic
      */
-    function PlotSelector(wrc) {
+    function PlotSelector(wic) {
         // measure subtype
         this.measureSubType = -1;
         // size of well
@@ -25,7 +25,7 @@ var PlotSelector = (function () {
          * Number of wellSets in wellSets list
          */
         this.wellSetsCount = 1;
-        this.wrc = wrc;
+        this.wic = wic;
     }
     PlotSelector.prototype.init = function () {
         this.initPlotSelectorForm();
@@ -42,8 +42,8 @@ var PlotSelector = (function () {
         var data = { selects: [] };
         for (var s = 0; s <= 2; s++) {
             data.selects.push({ num: s + 1, notFirst: (s > 0), opts: [] });
-            for (var i = 0; i < wrc.wr.measureSubTypes.length; i++) {
-                data.selects[s].opts.push({ name: wrc.wr.measureSubTypes[i].name, value: i });
+            for (var i = 0; i < wic.wr.measureSubTypes.length; i++) {
+                data.selects[s].opts.push({ name: wic.wr.measureSubTypes[i].name, value: i });
             }
         }
         var tplScript = $("#selector-form-template").html();
@@ -119,26 +119,26 @@ var PlotSelector = (function () {
      */
     PlotSelector.prototype.initColorPalette = function () {
         var palette = "";
-        for (var i = 0; i < wrc.plotController.colors.length; i++) {
-            palette += "<span class='color-wrapper'><span id='col-" + i + "' data-color-id='" + i + "' class='color-cell' style='background-color: " + wrc.plotController.colors[i] + "'>&nbsp;</span></span>";
+        for (var i = 0; i < wic.plotController.colors.length; i++) {
+            palette += "<span class='color-wrapper'><span id='col-" + i + "' data-color-id='" + i + "' class='color-cell' style='background-color: " + wic.plotController.colors[i] + "'>&nbsp;</span></span>";
         }
         palette += "<span class='color-wrapper'><span id='col-auto' data-color-id='auto' class='color-auto'>Auto</span></span>";
         $('#color-palette').html(palette);
-        wrc.plotController.currentColor = 'auto';
+        wic.plotController.currentColor = 'auto';
         $('#col-auto').parent().css("border-color", "black");
         $('.color-cell').click(function () {
-            $('#col-' + wrc.plotController.currentColor).parent().css("border-color", "white");
+            $('#col-' + wic.plotController.currentColor).parent().css("border-color", "white");
             var colorId = $(this).data("color-id");
-            wrc.plotController.currentColor = colorId;
+            wic.plotController.currentColor = colorId;
             $('#col-' + colorId).parent().css("border-color", "black");
         });
         $('.color-auto').click(function () {
-            $('#col-' + wrc.plotController.currentColor).parent().css("border-color", "white");
+            $('#col-' + wic.plotController.currentColor).parent().css("border-color", "white");
             var colorId = $(this).data("color-id");
             $('#col-' + colorId).parent().css("border-color", "black");
-            wrc.plotController.currentColor = colorId;
-            wrc.plotController.usedColors = [];
-            wrc.plotController.colorHash = [];
+            wic.plotController.currentColor = colorId;
+            wic.plotController.usedColors = [];
+            wic.plotController.colorHash = [];
         });
     };
     /**
@@ -150,7 +150,7 @@ var PlotSelector = (function () {
             for (var l = 0; l < 8; l++) {
                 for (var c = 0; c < 12; c++) {
                     if (this.selected[l][c])
-                        sels.push(this.wrc.wr.getWell(12 * l + c));
+                        sels.push(this.wic.wr.getWell(12 * l + c));
                 }
             }
         }
@@ -174,7 +174,7 @@ var PlotSelector = (function () {
         if (this.mode == PlotSelector.PLOT_DISPLAY_MODE)
             this.selected[l][c] = sel;
         else
-            this.selectedWell = this.wrc.wr.getWell(12 * l + c);
+            this.selectedWell = this.wic.wr.getWell(12 * l + c);
     };
     /**
      * Update well sets list in plot selector
@@ -184,19 +184,19 @@ var PlotSelector = (function () {
         for (var ws = 1; ws <= 5; ws++) {
             var wellSetDiv = $("#ws" + ws);
             wellSetDiv.html('<option value="">---</option>');
-            this.wrc.wr.wellSets.forEach(function (wso) {
+            this.wic.wr.wellSets.forEach(function (wso) {
                 wellSetDiv.append('<option value="' + wso.name + '">' + wso.name + '</option>');
             });
             wellSetDiv.change(function () {
                 ps.initSelection();
-                var ws = ps.wrc.wr.wellSetDictionary[$(this).val()];
+                var ws = ps.wic.wr.wellSetDictionary[$(this).val()];
                 if (ws != null) {
                     ws.wells.forEach(function (w) {
-                        wrc.plotSelector.selected[w.getLine()][w.getColumn()] = true;
+                        wic.plotSelector.selected[w.getLine()][w.getColumn()] = true;
                     });
                 }
-                wrc.plotSelector.drawMicroplate();
-                wrc.plotController.updatePlots();
+                wic.plotSelector.drawMicroplate();
+                wic.plotController.updatePlots();
             });
         }
     };
@@ -234,7 +234,7 @@ var PlotSelector = (function () {
         }
         for (var l = 0; l < 8; l++) {
             for (var c = 0; c < 12; c++) {
-                if (this.wrc.wr.getWell(12 * l + c).hasMeasure(this.measureSubType)) {
+                if (this.wic.wr.getWell(12 * l + c).hasMeasure(this.measureSubType)) {
                     context.beginPath();
                     context.arc(this.xCoord(c), this.yCoord(l), 10, 0, Math.PI * 2, false);
                     context.fillStyle = 'lightgray';
@@ -264,7 +264,7 @@ var PlotSelector = (function () {
             var yNow = e.pageY - canvasOffsetY; // console.log('clic:',xNow, yNow, Math.abs(xNow - ps.xCoord(0)), Math.abs(yNow - ps.yCoord(0)));
             for (var l = 0; l < 8; l++) {
                 for (var c = 0; c < 12; c++) {
-                    if (Math.abs(xNow - ps.xCoord(c)) < 15 && Math.abs(yNow - ps.yCoord(l) - $('#tree').height() - 10) < 15 && ps.wrc.wr.getWell(12 * l + c).hasMeasure(ps.measureSubType)) {
+                    if (Math.abs(xNow - ps.xCoord(c)) < 15 && Math.abs(yNow - ps.yCoord(l) - $('#tree').height() - 10) < 15 && ps.wic.wr.getWell(12 * l + c).hasMeasure(ps.measureSubType)) {
                         var val = ps.isSelected(l, c);
                         ps.setSelected(l, c, !val);
                         break;
@@ -273,9 +273,9 @@ var PlotSelector = (function () {
             }
             ps.drawMicroplate();
             if (ps.mode == PlotSelector.OUTLIER_DETECTION_MODE)
-                ps.wrc.outlierDetectionController.updatePlots();
+                ps.wic.outlierDetectionController.updatePlots();
             else if (ps.mode == PlotSelector.PLOT_DISPLAY_MODE)
-                ps.wrc.plotController.updatePlots();
+                ps.wic.plotController.updatePlots();
             else {
                 console.log("Invalid mode: " + ps.mode);
             }
@@ -344,6 +344,7 @@ var PlotSelector = (function () {
     };
     PlotSelector.prototype.copyUpPlotParameters = function (plotNumber) {
         $("#measure-" + (plotNumber - 1)).val($("#measure-" + plotNumber).val());
+        this.measureChanged(plotNumber - 1);
         $("#plot-type-" + (plotNumber - 1)).val($("#plot-type-" + plotNumber).val());
         $("#show-mean-" + (plotNumber - 1)).prop('checked', $("#show-mean-" + plotNumber).is(':checked'));
         $("#show-std-error-" + (plotNumber - 1)).prop('checked', $("#show-std-error-" + plotNumber).is(':checked'));
@@ -370,7 +371,7 @@ var PlotSelector = (function () {
         // hide options in function of selected measure
         var measureSel = $("#measure-" + plotNumber).val();
         if (measureSel != "") {
-            var mst = wrc.wr.measureSubTypes[measureSel];
+            var mst = wic.wr.measureSubTypes[measureSel];
             if (mst.type == Measure.ABS_TYPE) {
                 $("#promoterActivity-" + plotNumber).hide();
                 $("#reporterConcentration-" + plotNumber).hide();

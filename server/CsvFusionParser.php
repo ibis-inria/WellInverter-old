@@ -34,6 +34,10 @@ class CsvFusionParser extends CsvParser {
      */
     var $previousMeasureHour;
 
+	var $programs = array();
+
+	var $currentProgramIndex = -1;
+
     //function handleLine() {}
 	function handleLine() {
 		$cell1 = $this->getCell(0);
@@ -41,12 +45,15 @@ class CsvFusionParser extends CsvParser {
 		if ( $cell1 == "Assay:" ) { // new program
 			$this->insideSection = self::PROGRAM_DESCRIPTION;
 			$this->currentProgramName = $this->nextCell(0);
-			$this->currentProgram =  ( ! isset($this->wr["programs"][$this->currentProgramName]) ? array() : null );
+			if ( ! in_array($this->currentProgramName, $this->programs) )
+				$this->programs[] = $this->currentProgramName;
+			$this->currentProgram["Name"] = $this->currentProgramName;
+			$this->currentProgramIndex = array_search($this->currentProgramName, $this->programs);
 		}
 
 		if ( $cell1 == "Well Number" ) { // new measure table
-			if ( $this->currentProgram !== null ) {
-				$this->wr["programs"][$this->currentProgramName] = $this->currentProgram;
+			if ( $this->currentProgramIndex != -1 ) {
+				$this->wr["programs"][$this->currentProgramIndex] = $this->currentProgram;
 				$this->currentProgram = null;
 				$this->currentProgramName = null;
 			}
@@ -117,7 +124,7 @@ class CsvFusionParser extends CsvParser {
 				if ( $type == "Time" )
                     $this->wr["wells"][$cell1 - 1]["measures"][$this->currentMeasureType]["time"][] = $this->convertTime($this->getCell($c));
 				else if ( $type == "Absorbance" || $type == "RFU" || $type == "RLU" )
-                    $this->wr["wells"][$cell1 - 1]["measures"][$this->currentMeasureType]["originalSignal"][] = $this->convertValue($this->getCell($c));
+					$this->wr["wells"][$cell1 - 1]["measures"][$this->currentMeasureType]["originalSignal"][] = $this->convertValue($this->getCell($c));
 				/*
 				else if ( $this->columnType[$c] == "Sample Type" ) {
 				}
@@ -152,12 +159,15 @@ class CsvFusionParser extends CsvParser {
 
 	static function test() {
         $t1 = microtime(true);
-		$p = new CsvFusionParser("tests/exp_2006_12_21b.csv", ',');
+		// $p = new CsvFusionParser("tests/exp_2006_12_21b.csv", ',');
+		$p = new CsvFusionParser("/www/WellInverter/experiments/2011-01-26.CSV", ",");
 		$p->parse();
-		//var_dump($p->wr);
+		var_dump($p->wr);
+
         $t2 = microtime(true);
         echo "Time:" . ($t2-$t1) . "s";
 	}
 }
 
+//include "WellInverterController.php";
 //CsvFusionParser::test();

@@ -1,13 +1,13 @@
 
 <div style="margin: 10px">
-   <h2>Upload a Tecan experiment XLSX File</h2>
-   <div id="fileuploader">Select Tecan file to upload (.XLSX)</div>
+   <h2>Upload a Tecan data file</h2>
+   <div id="fileuploader">Select  Tecan XLSX file to upload</div>
    <div id="eventsmessage"></div>
 </div>
 <script>
    $(document).ready(function() {
       $("#fileuploader").uploadFile({
-         url:"../../server/WellReaderController.php",
+         url:"../../server/WellInverterController.php",
          allowedTypes:"xlsx",
          acceptFiles: ".xlsx",
          fileName:"file",

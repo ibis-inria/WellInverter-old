@@ -1,4 +1,4 @@
-///<reference path="WellReaderController.ts" />
+///<reference path="WellInverterController.ts" />
 ///<reference path="WindowController.ts" />
 
 declare var $: JQueryStatic;
@@ -16,8 +16,8 @@ class DialogController extends WindowController {
     /**
      * Constructor
      */
-    constructor(wrc: WellReaderController, content: string) {
-        super(wrc, null);
+    constructor(wic: WellInverterController, content: string) {
+        super(wic, null);
         this.content = content;
     }
 

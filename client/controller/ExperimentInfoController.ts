@@ -1,4 +1,4 @@
-///<reference path="WellReaderController.ts" />
+///<reference path="WellInverterController.ts" />
 
 declare var $: JQueryStatic;
 
@@ -8,9 +8,9 @@ declare var $: JQueryStatic;
 class ExperimentInfoController {
 
     /**
-     * WellReaderController associated with me
+     * WellInverterController associated with me
      */
-    public wrc: WellReaderController;
+    public wic: WellInverterController;
 
     /**
      * id of the div containing experiment info in the view
@@ -20,8 +20,8 @@ class ExperimentInfoController {
     /**
      * Constructor
      */
-    constructor(wrc: WellReaderController, experimentInfoDivId: string) {
-        this.wrc = wrc;
+    constructor(wic: WellInverterController, experimentInfoDivId: string) {
+        this.wic = wic;
         this.experimentInfoDivId = experimentInfoDivId;
     }
 
@@ -29,7 +29,7 @@ class ExperimentInfoController {
      * Display experiment info in tab
      */
     showView(): void {
-        this.wrc.tabController.showTab(TabController.EXPERIMENT_INFO_TAB);
+        this.wic.tabController.showTab(TabController.EXPERIMENT_INFO_TAB);
         var eic: ExperimentInfoController = this;
         $("#experiment-info").livequery(function(){ eic.generateInfo();});
     }
@@ -38,7 +38,7 @@ class ExperimentInfoController {
      * Generate HTML code from experiment info
      */
     generateInfo(): void {
-        var wr = this.wrc.wr;
+        var wr = this.wic.wr;
         var s = "Initial time: " + wr.initialTime;
         var p = 0;
 

@@ -1,4 +1,4 @@
-///<reference path="WellReaderController.ts" />
+///<reference path="WellInverterController.ts" />
 ///<reference path="TabController.ts" />
 /**
  * Class for handling help
@@ -7,14 +7,14 @@ var HelpController = (function () {
     /**
      * Constructor
      */
-    function HelpController(wrc) {
-        this.wrc = wrc;
+    function HelpController(wic) {
+        this.wic = wic;
     }
     /**
      * Display help about active tab in a new help tab
      */
     HelpController.prototype.showView = function () {
-        var tc = this.wrc.tabController;
+        var tc = this.wic.tabController;
         if (tc.existsTab(TabController.HELP_TAB))
             tc.closeTab(TabController.HELP_TAB);
         var selTab = tc.selectedTab();

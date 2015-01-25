@@ -1,4 +1,4 @@
-///<reference path="WellReaderController.ts" />
+///<reference path="WellInverterController.ts" />
 ///<reference path="WindowController.ts" />
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -14,8 +14,8 @@ var UploadExperimentController = (function (_super) {
     /**
      * Constructor
      */
-    function UploadExperimentController(wrc, url, title) {
-        _super.call(this, wrc, url);
+    function UploadExperimentController(wic, url, title) {
+        _super.call(this, wic, url);
         this.jqWindow().window({ title: title, width: 600, height: 250 });
         var jqForm = $('#form-upload');
         jqForm.form({

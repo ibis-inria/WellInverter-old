@@ -1,4 +1,4 @@
-///<reference path="WellReaderController.ts" />
+///<reference path="WellInverterController.ts" />
 ///<reference path="WindowController.ts" />
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -14,8 +14,8 @@ var DialogController = (function (_super) {
     /**
      * Constructor
      */
-    function DialogController(wrc, content) {
-        _super.call(this, wrc, null);
+    function DialogController(wic, content) {
+        _super.call(this, wic, null);
         this.content = content;
     }
     /**

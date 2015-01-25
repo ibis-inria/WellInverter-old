@@ -1,4 +1,4 @@
-///<reference path="WellReaderController.ts" />
+///<reference path="WellInverterController.ts" />
 ///<reference path="WindowController.ts" />
 
 declare var $: JQueryStatic;
@@ -11,8 +11,8 @@ class UploadExperimentController extends WindowController {
     /**
      * Constructor
      */
-    constructor(wrc: WellReaderController, url: string, title: string) {
-        super(wrc, url);
+    constructor(wic: WellInverterController, url: string, title: string) {
+        super(wic, url);
         this.jqWindow().window({title: title, width: 600, height: 250});
         var jqForm: any = $('#form-upload');
         jqForm.form({

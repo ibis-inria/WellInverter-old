@@ -115,7 +115,7 @@ class Measure {
      * Returns subtype name
      */
     subTypeName(): string {
-        return wrc.wr.measureSubTypes[this.subType].name;
+        return wic.wr.measureSubTypes[this.subType].name;
     }
 
     /**
@@ -135,7 +135,7 @@ class Measure {
      */
     parameterValue(paramName): number {
         var param: String = this.subTypeName() + "_" + paramName;
-        return wrc.experimentParametersController.getParameterValue(param);
+        return wic.experimentParametersController.getParameterValue(param);
     }
 
     /**
@@ -191,14 +191,14 @@ class Measure {
             'values_curve_1': c1.value,
             'times_curve_2': c2.time,
             'values_curve_2': c2.value,
-            'max_shift': wrc.experimentParametersController.getParameterValue('max_shift')
+            'max_shift': wic.experimentParametersController.getParameterValue('max_shift')
         };
 
         // run wellfare/synchronize
 
         var timeShift = 0;
         $.ajax({
-            url: "http://" + window.location.host + ":" + wrc.config.wellfarePort + "/wellfare/synchronize",
+            url: "http://" + window.location.host + ":" + wic.config.wellfarePort + "/wellfare/synchronize",
             async: false,   // because needs to be chained with other wellfare methods
             type: 'POST',
             dataType: 'json',
@@ -293,7 +293,7 @@ class Measure {
 
                 var that = this;
                 $.ajax({
-                    url: "http://" + window.location.host + ":" + wrc.config.wellfarePort + "/wellfare/growth",
+                    url: "http://" + window.location.host + ":" + wic.config.wellfarePort + "/wellfare/growth",
                     type: 'POST',
                     dataType: 'json',
                     async: false,
@@ -316,7 +316,7 @@ class Measure {
      * Compute (if not already done) and return reporter concentration.
      */
     getReporterConcentrationCurve(): Curve {
-        if ( this.reporterConcentrationCurve == null && this.type == Measure.ABS_TYPE ) {
+        if ( this.reporterConcentrationCurve == null && this.type == Measure.RFU_TYPE ) {
 
             var subtractedBackgroundCurve: Curve = this.getSubtractedBackgroundCurve();
             var fluoMeasure = this.well.getMeasure(Measure.RFU_TYPE);
@@ -336,7 +336,7 @@ class Measure {
                 var that = this;
                 $("body").addClass("loading");
                 $.ajax({
-                    url: "http://" + window.location.host + ":" + wrc.config.wellfarePort + "/wellfare/concentration",
+                    url: "http://" + window.location.host + ":" + wic.config.wellfarePort + "/wellfare/concentration",
                     type: 'POST',
                     dataType: 'json',
                     async: false,
@@ -360,7 +360,7 @@ class Measure {
      * Compute (if not already done) and return reporter concentration.
      */
      getPromoterActivityCurve():Curve {
-        if ( this.promoterActivityCurve == null  && this.type == Measure.ABS_TYPE ) {
+        if ( this.promoterActivityCurve == null  && this.type == Measure.RFU_TYPE ) {
 
             var subtractedBackgroundCurve: Curve = this.getSubtractedBackgroundCurve();
             var fluoMeasure = this.well.getMeasure(Measure.RFU_TYPE);
@@ -379,7 +379,7 @@ class Measure {
                 var that = this;
                 $("body").addClass("loading");
                 $.ajax({
-                    url: "http://" + window.location.host + ":" + wrc.config.wellfarePort + "/wellfare/activity",
+                    url: "http://" + window.location.host + ":" + wic.config.wellfarePort + "/wellfare/activity",
                     type: 'POST',
                     dataType: 'json',
                     async: false,

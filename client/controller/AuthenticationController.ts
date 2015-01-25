@@ -1,4 +1,4 @@
-///<reference path="WellReaderController.ts" />
+///<reference path="WellInverterController.ts" />
 ///<reference path="WindowController.ts" />
 ///<reference path="../model/Session.ts" />
 
@@ -12,8 +12,8 @@ class AuthenticationController extends WindowController {
     /**
      * Constructor
      */
-    constructor(wrc: WellReaderController) {
-        super(wrc, "authentication.html");
+    constructor(wic: WellInverterController) {
+        super(wic, "authentication.html");
     }
 
     /**
@@ -47,7 +47,7 @@ class AuthenticationController extends WindowController {
         var passwordTxt = $('#password');
         if (this.isValidIdentity(loginTxt.val(), passwordTxt.val())) {
             this.close();
-            this.wrc.init();
+            this.wic.init();
         }
         else {
             $('#auth-failure').html("Error: incorrect login and/or password");
@@ -66,7 +66,8 @@ class AuthenticationController extends WindowController {
         if ( (login == "hdj" && password == "hdj")
             || (login == "mp" && password == "mp")
             || (login == "cb" && password == "cb")
-            || (login == "vz" && password == "vz")) {
+            || (login == "vz" && password == "vz")
+            || (login == "guest" && password == "guest2015")) {
             Session.setUserName(login);
             return true;
         }

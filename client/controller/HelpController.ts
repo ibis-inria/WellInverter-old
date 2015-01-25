@@ -1,4 +1,4 @@
-///<reference path="WellReaderController.ts" />
+///<reference path="WellInverterController.ts" />
 ///<reference path="TabController.ts" />
 
 
@@ -8,22 +8,22 @@
 class HelpController {
 
     /**
-     * WellReaderController associated with me
+     * WellInverterController associated with me
      */
-    wrc: WellReaderController;
+    wic: WellInverterController;
 
     /**
      * Constructor
      */
-    constructor(wrc: WellReaderController) {
-        this.wrc = wrc;
+    constructor(wic: WellInverterController) {
+        this.wic = wic;
     }
 
     /**
      * Display help about active tab in a new help tab
      */
     showView():void {
-        var tc = this.wrc.tabController;
+        var tc = this.wic.tabController;
         if ( tc.existsTab(TabController.HELP_TAB) )
             tc.closeTab(TabController.HELP_TAB);
 

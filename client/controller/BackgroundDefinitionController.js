@@ -1,5 +1,5 @@
 ///<reference path="../jquery.d.ts" />
-///<reference path="WellReaderController.ts" />
+///<reference path="WellInverterController.ts" />
 ///<reference path="../model/MeasureSubType.ts" />
 /**
  * Class for handling background definition. Associated view is background-definition.html
@@ -8,7 +8,7 @@ var BackgroundDefinitionController = (function () {
     /**
      * Constructor
      */
-    function BackgroundDefinitionController(wrc, measureSubType, canvasContainerId) {
+    function BackgroundDefinitionController(wic, measureSubType, canvasContainerId) {
         // mouse button variables
         this.gMOUSEUP = false;
         this.gMOUSEDOWN = false;
@@ -22,7 +22,7 @@ var BackgroundDefinitionController = (function () {
         // offset of the 1st well from the top left corner
         this.matrixOffsetX = 20;
         this.matrixOffsetY = 50;
-        this.wrc = wrc;
+        this.wic = wic;
         this.measureSubType = measureSubType;
         this.canvasContainerId = canvasContainerId;
         this.selected = [];
@@ -51,7 +51,7 @@ var BackgroundDefinitionController = (function () {
         }
         for (var l = 0; l < 8; l++) {
             for (var c = 0; c < 12; c++) {
-                var w = this.wrc.wr.getWell(12 * l + c);
+                var w = this.wic.wr.getWell(12 * l + c);
                 var m = w.getMeasure(this.measureSubType);
                 var bw = w.getBackgroundWell(this.measureSubType);
                 var isb = w.isBackground(this.measureSubType);
@@ -98,7 +98,7 @@ var BackgroundDefinitionController = (function () {
                 var yNow = e.pageY - microplate.offset().top;
                 for (var l = 0; l < 8; l++) {
                     for (var c = 0; c < 12; c++) {
-                        var measure = wrc.wr.getWell(12 * l + c).getMeasure(bdc.measureSubType);
+                        var measure = wic.wr.getWell(12 * l + c).getMeasure(bdc.measureSubType);
                         if (Math.abs(xNow - bdc.xCoord(c)) < 15 && Math.abs(yNow - bdc.yCoord(l)) < 15 && bdc.selectionMode == BackgroundDefinitionController.WELLS_SELECTION_MODE && measure != null) {
                             for (var i = 0; i < measure.time.length; i++)
                                 originalSignal.push([measure.time[i], measure.originalSignal[i]]);
@@ -108,7 +108,7 @@ var BackgroundDefinitionController = (function () {
                                     credits: { enabled: false },
                                     exporting: { enabled: false },
                                     plotOptions: { series: { animation: false, lineWidth: 0 } },
-                                    title: { text: wrc.wr.getWell(12 * l + c).getName() },
+                                    title: { text: wic.wr.getWell(12 * l + c).getName() },
                                     legend: { enabled: false },
                                     yAxis: { title: { text: "" }, labels: { formatter: function () {
                                         return this.value;
@@ -198,7 +198,7 @@ var BackgroundDefinitionController = (function () {
         for (var l = 0; l < 8; l++) {
             for (var c = 0; c < 12; c++) {
                 //console.log(Math.abs(xNow - matrix.xCoord(c)), Math.abs(yNow - matrix.yCoord(l)));
-                if (xmin < this.xCoord(c) && xmax > this.xCoord(c) && ymin < this.yCoord(l) + this.matrixOffsetY && ymax > this.yCoord(l) + this.matrixOffsetY && (this.selectionMode == BackgroundDefinitionController.WELLS_SELECTION_MODE || wrc.wr.getWell(12 * l + c).getMeasure(this.measureSubType) != null)) {
+                if (xmin < this.xCoord(c) && xmax > this.xCoord(c) && ymin < this.yCoord(l) + this.matrixOffsetY && ymax > this.yCoord(l) + this.matrixOffsetY && (this.selectionMode == BackgroundDefinitionController.WELLS_SELECTION_MODE || wic.wr.getWell(12 * l + c).getMeasure(this.measureSubType) != null)) {
                     this.selected[l][c] = true;
                 }
             }
@@ -219,7 +219,7 @@ var BackgroundDefinitionController = (function () {
         for (var l = 0; l < 8; l++) {
             for (var c = 0; c < 12; c++) {
                 // click on a well
-                if (Math.abs(xNow - this.xCoord(c)) < 15 && Math.abs(yNow - this.yCoord(l)) < 15 && (this.selectionMode == BackgroundDefinitionController.WELLS_SELECTION_MODE || wrc.wr.getWell(12 * l + c).getMeasure(this.measureSubType) != null)) {
+                if (Math.abs(xNow - this.xCoord(c)) < 15 && Math.abs(yNow - this.yCoord(l)) < 15 && (this.selectionMode == BackgroundDefinitionController.WELLS_SELECTION_MODE || wic.wr.getWell(12 * l + c).getMeasure(this.measureSubType) != null)) {
                     sel = { l: l, c: c };
                     updatedSelection = true;
                     break;
@@ -227,7 +227,7 @@ var BackgroundDefinitionController = (function () {
                 // click on a line name
                 if (Math.abs(xNow - this.xCoord(0) + 30) < 15 && Math.abs(yNow - this.yCoord(l)) < 15 && this.selectionMode == BackgroundDefinitionController.WELLS_SELECTION_MODE) {
                     for (var c1 = 0; c1 < 12; c1++) {
-                        if (this instanceof WellSetController || wrc.wr.getWell(12 * l + c1).hasMeasure(this.measureSubType))
+                        if (this instanceof WellSetController || wic.wr.getWell(12 * l + c1).hasMeasure(this.measureSubType))
                             this.selected[l][c1] = true;
                     }
                     updatedSelection = true;
@@ -236,7 +236,7 @@ var BackgroundDefinitionController = (function () {
                 // click on a column name
                 if (Math.abs(yNow - this.yCoord(0) + 30) < 15 && Math.abs(xNow - this.xCoord(c)) < 15 && this.selectionMode == BackgroundDefinitionController.WELLS_SELECTION_MODE) {
                     for (var l1 = 0; l1 < 8; l1++) {
-                        if (this instanceof WellSetController || wrc.wr.getWell(12 * l1 + c).hasMeasure(this.measureSubType))
+                        if (this instanceof WellSetController || wic.wr.getWell(12 * l1 + c).hasMeasure(this.measureSubType))
                             this.selected[l1][c] = true;
                     }
                     updatedSelection = true;
@@ -245,11 +245,11 @@ var BackgroundDefinitionController = (function () {
             }
         }
         if (sel != null) {
-            if (wrc.wr.getWell(12 * sel.l + sel.c).getMeasure(this.measureSubType) != null) {
+            if (wic.wr.getWell(12 * sel.l + sel.c).getMeasure(this.measureSubType) != null) {
                 if (this.selectionMode == BackgroundDefinitionController.WELLS_SELECTION_MODE)
                     this.selected[sel.l][sel.c] = !this.selected[sel.l][sel.c];
                 else {
-                    this.selectedBackGroundWell = wrc.wr.getWell(12 * sel.l + sel.c);
+                    this.selectedBackGroundWell = wic.wr.getWell(12 * sel.l + sel.c);
                     this.setBackgroundWell();
                 }
             }
@@ -284,14 +284,14 @@ var BackgroundDefinitionController = (function () {
         for (var l = 0; l < 8; l++) {
             for (var c = 0; c < 12; c++) {
                 if (this.selected[l][c]) {
-                    this.wrc.wr.wells[12 * l + c].setBackgroundWell(this.measureSubType, this.selectedBackGroundWell);
+                    this.wic.wr.wells[12 * l + c].setBackgroundWell(this.measureSubType, this.selectedBackGroundWell);
                     this.selected[l][c] = false;
                 }
             }
         }
         this.selectedBackGroundWell = null;
         this.toggleSelectionMode(BackgroundDefinitionController.WELLS_SELECTION_MODE);
-        this.wrc.experimentController.saveExperiment();
+        this.wic.experimentController.saveExperiment();
     };
     /**
      * Run on "Set background" button click
@@ -306,15 +306,15 @@ var BackgroundDefinitionController = (function () {
         for (var l = 0; l < 8; l++) {
             for (var c = 0; c < 12; c++) {
                 if (this.selected[l][c]) {
-                    this.wrc.wr.wells[12 * l + c].setBackgroundWell(this.measureSubType, null);
+                    this.wic.wr.wells[12 * l + c].setBackgroundWell(this.measureSubType, null);
                     this.selected[l][c] = false;
                 }
             }
         }
         this.draw();
         this.updateSetBackgroundButtons();
-        this.wrc.wr.resetComputedData();
-        this.wrc.experimentController.saveExperiment();
+        this.wic.wr.resetComputedData();
+        this.wic.experimentController.saveExperiment();
     };
     /**
      * Toggle selection mode: are we selecting wells or background wells in microplate ?
@@ -341,23 +341,23 @@ var BackgroundDefinitionController = (function () {
         }
         else {
             this.selectionMode = mode;
-            $('#background-definition-tip').html("1. Select the wells for which you want to set/unset the background well: click a well, a column name or a line name, or draw rectangular selection.<br>" + "2. Click the 'Set background'/'Unset background' button to set/unset the background of selected wells");
+            $('#background-definition-tip').html("1. Select the wells for which you want to set/clear the background.<br>" + "2. Click on the <i>Set background</i>/<i>Clear background</i> button to set/clear the background of the selected wells");
         }
-        this.wrc.wr.resetComputedData();
+        this.wic.wr.resetComputedData();
     };
     /**
      * Show view in tab
      */
     BackgroundDefinitionController.prototype.showView = function () {
         this.closeExistingMicroplateViews();
-        this.wrc.tabController.showTab(TabController.BACKGROUND_DEFINITION_TAB);
+        this.wic.tabController.showTab(TabController.BACKGROUND_DEFINITION_TAB);
         var bdc = this;
         $("#background-microplate").livequery(function () {
             bdc.draw();
             bdc.toggleSelectionMode(BackgroundDefinitionController.WELLS_SELECTION_MODE);
             bdc.updateSetBackgroundButtons();
             bdc.initMouseHandler();
-            $("#measure-subtype").html(wrc.wr.measureSubTypes[bdc.measureSubType].name);
+            $("#measure-subtype").html(wic.wr.measureSubTypes[bdc.measureSubType].name);
         });
     };
     /**
@@ -365,12 +365,12 @@ var BackgroundDefinitionController = (function () {
      * A better solution would be to use a JS template system like Mustache
      */
     BackgroundDefinitionController.prototype.closeExistingMicroplateViews = function () {
-        var tc = this.wrc.tabController;
+        var tc = this.wic.tabController;
         if (tc.existsTab(TabController.BACKGROUND_DEFINITION_TAB))
             tc.closeTab(TabController.BACKGROUND_DEFINITION_TAB);
-        for (var i = 0; i < this.wrc.wr.wellSets.length; i++) {
-            if (tc.existsTab(TabController.WELL_SET_DEFINITION_TAB, this.wrc.wr.wellSets[i]))
-                tc.closeTab(TabController.WELL_SET_DEFINITION_TAB, this.wrc.wr.wellSets[i]);
+        for (var i = 0; i < this.wic.wr.wellSets.length; i++) {
+            if (tc.existsTab(TabController.WELL_SET_DEFINITION_TAB, this.wic.wr.wellSets[i]))
+                tc.closeTab(TabController.WELL_SET_DEFINITION_TAB, this.wic.wr.wellSets[i]);
         }
     };
     // selection modes: wells or background well

@@ -10,10 +10,10 @@
    <script src="../libraries/highcharts/js/highcharts.js"></script>
    <script src="../libraries/highcharts/js/modules/exporting.js"></script>
 
-   <script src="../model/WellReader.js"></script>
+   <script src="../model/WellInverter.js"></script>
    <script src="../model/Polynomial.js"></script>
    <script src="../model/SmoothingCubicSpline.js"></script>
-   <script src="../controller/WellReaderController.js"></script>
+   <script src="../controller/WellInverterController.js"></script>
    <script src="../controller/ExperimentController.js"></script>
    <script src="controller/WellSelector.js"></script>
    <script src="../controller/BackgroundDefinitionController.js"></script>
@@ -32,10 +32,10 @@
       var wrc;
 
       function post(action, data) {
-         return $.post("../server/WellReaderController.php", {action: action});
+         return $.post("../server/WellInverterController.php", {action: action});
       }
       $(document).ready(function() {
-         wrc = new WellReaderController('tree-container', 'tabs-container');
+         wrc = new WellInverterController('tree-container', 'tabs-container');
          post("experimentsList").done(function(result) {console.log(JSON.parse(result));});
       });
    </script>

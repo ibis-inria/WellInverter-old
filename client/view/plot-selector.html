@@ -10,8 +10,8 @@
             </select>
             <select id="plot-type-{{num}}" style="width:115px" onchange="wrc.plotController.updatePlots()">
                 <option value="">---</option>
-                <option id="originalSignal-{{num}}" value="originalSignal" selected>Original data</option>
-                <option id="outlierFreeSignal-{{num}}" value="outlierFreeSignal">Outliers-free data</option>
+                <option id="originalSignal-{{num}}" value="originalSignal" selected>Primary data</option>
+                <option id="outlierFreeSignal-{{num}}" value="outlierFreeSignal">Outlier-free data</option>
                 <option id="synchronized-{{num}}" value="synchronized">Synchronized data</option>
                 <option id="subtractedBackground-{{num}}" value="subtractedBackground">Corrected data</option>
                 <option id="growthRate-{{num}}" value="growthRate">Growth rate</option>
@@ -64,7 +64,7 @@
                 <input type="button"  id="plus-ws" value="+" onclick="wrc.plotSelector.addWellSetClickHandler()">
             </div>
         -->
-        <div>Measure<span style="margin-left:60px">Data</span><span style="margin-left:75px">Mean</span><span style="margin-left:10px">Std.Err.</span></div>
+        <div>Measurement<span style="margin-left:25px">Profile</span><span style="margin-left:80px">Mean</span><span style="margin-left:10px">SEM</span></div>
         <div id="plot-selector-form"></div>
         <div>
             <input type="button"  id="plus" value="+" onclick="wrc.plotSelector.addPlotClickHandler()">
